@@ -60,8 +60,7 @@ dispatch_queue_t backgroundQueueCoreLocation;//for CoreLocation
         deviceDirection=@"West";
     
     //Add notification when the heading is updated
-    NSString *key = @"HeadingStringValue";
-    NSDictionary *dictionary = [NSDictionary dictionaryWithObject:deviceDirection forKey:key];
+    NSDictionary *dictionary = [NSDictionary dictionaryWithObject:deviceDirection forKey:@"HeadingStringValue"];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"HeadingUpdated" object:nil userInfo:dictionary];
 }
 

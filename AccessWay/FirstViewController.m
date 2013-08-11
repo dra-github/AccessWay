@@ -42,9 +42,8 @@
 //A method that gets the current direction of the device when the heading changes are detected in CoreLocationManager
 - (void)updatedHeadingNotification:(NSNotification *)notification //use notification method and logic
 {
-    NSString *key = @"HeadingStringValue";
     NSDictionary *dictionary = [notification userInfo];
-    NSString *headingValueToUse = [dictionary valueForKey:key];
+    NSString *headingValueToUse = [dictionary valueForKey:@"HeadingStringValue"];
     self.deviceDirectionLabel.text = headingValueToUse;
 }
 
