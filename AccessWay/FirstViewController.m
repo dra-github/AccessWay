@@ -38,7 +38,9 @@
     //Show the main user options when the user clicks on the "Tell me more about this station" button
     if([segue.identifier isEqualToString:@"userOptionsSegue"])
     {
-        MainButtonsViewController *mainButtonsViewController = [segue destinationViewController];
+        //UINavigationController *navigationController =segue.destinationViewController;
+		//UserOptionsViewController *userOptionsViewController = [[navigationController viewControllers]objectAtIndex:0];
+        UserOptionsViewController *userOptionsViewController = [segue destinationViewController];
         //UINavigationController *navigationController =segue.destinationViewController;
 		//MainButtonsViewController *mainButtonsViewController = [[navigationController viewControllers]objectAtIndex:0];
         //mainButtonsViewController.delegate = self;

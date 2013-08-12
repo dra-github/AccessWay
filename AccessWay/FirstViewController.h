@@ -11,7 +11,7 @@
 #import <UIKit/UIKit.h>
 
 //Importing all the headers required for the MainButtonsViewController
-#import "MainButtonsViewController.h"
+#import "UserOptionsViewController.h"
 
 @interface FirstViewController : UIViewController
 

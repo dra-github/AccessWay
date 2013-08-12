@@ -31,7 +31,7 @@
 		DD4DC93317B822FF00E96240 /* accesswayJSON.json in Resources */ = {isa = PBXBuildFile; fileRef = DD4DC93217B822FF00E96240 /* accesswayJSON.json */; };
 		DD4DC93417B828B800E96240 /* AccesswayJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = DD4DC93117B820D800E96240 /* AccesswayJSON.m */; };
 		DD4DC93617B862F700E96240 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD4DC93517B862F700E96240 /* AudioToolbox.framework */; };
-		DD4DC93917B870A200E96240 /* MainButtonsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DD4DC93817B870A200E96240 /* MainButtonsViewController.m */; };
+		DD4DC93D17B930A600E96240 /* UserOptionsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DD4DC93C17B930A500E96240 /* UserOptionsViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -69,8 +69,8 @@
 		DD4DC93117B820D800E96240 /* AccesswayJSON.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AccesswayJSON.m; sourceTree = "<group>"; };
 		DD4DC93217B822FF00E96240 /* accesswayJSON.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = accesswayJSON.json; sourceTree = "<group>"; };
 		DD4DC93517B862F700E96240 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		DD4DC93717B870A200E96240 /* MainButtonsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MainButtonsViewController.h; path = ../MainButtonsViewController.h; sourceTree = "<group>"; };
-		DD4DC93817B870A200E96240 /* MainButtonsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MainButtonsViewController.m; path = ../MainButtonsViewController.m; sourceTree = "<group>"; };
+		DD4DC93B17B930A400E96240 /* UserOptionsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserOptionsViewController.h; sourceTree = "<group>"; };
+		DD4DC93C17B930A500E96240 /* UserOptionsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserOptionsViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -157,6 +157,8 @@
 				DD4DC90817B7091300E96240 /* FirstViewController.m */,
 				DD4DC90E17B7091300E96240 /* SecondViewController.h */,
 				DD4DC90F17B7091300E96240 /* SecondViewController.m */,
+				DD4DC93B17B930A400E96240 /* UserOptionsViewController.h */,
+				DD4DC93C17B930A500E96240 /* UserOptionsViewController.m */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -206,8 +208,6 @@
 		DD4DC93A17B870B500E96240 /* TableViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				DD4DC93717B870A200E96240 /* MainButtonsViewController.h */,
-				DD4DC93817B870A200E96240 /* MainButtonsViewController.m */,
 			);
 			name = TableViewControllers;
 			sourceTree = "<group>";
@@ -291,7 +291,7 @@
 				DD4DC91E17B70DDB00E96240 /* BLEManager.m in Sources */,
 				DD4DC92517B7179700E96240 /* CoreLocationManager.m in Sources */,
 				DD4DC92A17B7D6F700E96240 /* WiFiManager.m in Sources */,
-				DD4DC93917B870A200E96240 /* MainButtonsViewController.m in Sources */,
+				DD4DC93D17B930A600E96240 /* UserOptionsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
