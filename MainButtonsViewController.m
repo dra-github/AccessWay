@@ -53,7 +53,7 @@ bool areBLETagsAvailable = FALSE;
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
-    //Check for internet connection
+    //Check for internet connection. ROBIN's CODE TO CHECK FOR WIFI/CELLULAR CONNECTION
     WiFiManager *sharedWifiManager = [WiFiManager sharedWiFiManager];
     
     //Start scanning for BLE tags
@@ -305,6 +305,7 @@ bool areBLETagsAvailable = FALSE;
     NSLog(@"in updatedBLEAvailableNotification");
     NSDictionary *dictionary = [notification userInfo];
     NSString *bleIsAvailable = [dictionary valueForKey:@"BLEAvailabilityTagStringValue"];
+    NSString *theStationName = [dictionary valueForKey:@"stationNameStringValue"];
     
     //If a valid BLE tag is found, show a UI Action Sheet
     if ([bleIsAvailable isEqualToString:@"YES"]) {
@@ -314,11 +315,11 @@ bool areBLETagsAvailable = FALSE;
         [userOptionsArray replaceObjectAtIndex:3 withObject:@"Directions To A Train"];
         [userOptionsArray replaceObjectAtIndex:4 withObject:@"Directions To The Exit"];
         
+        //Update Information
+        [userOptionsArray replaceObjectAtIndex:0 withObject:theStationName];
+        
         //Reload the table with the new options
         [self.tableView reloadData];
-        
-        //Vibrate the phone
-        AudioServicesPlaySystemSound (kSystemSoundID_Vibrate);
         
         UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Accessway Beacon Found"
                                                                  delegate:self
@@ -330,6 +331,13 @@ bool areBLETagsAvailable = FALSE;
 }
 
 #pragma mark - UIActionSheet Methods
+// A method sent to the delegate after an action sheet is presented to the user.
+- (void)didPresentActionSheet:(UIActionSheet *)actionSheet{
+    //Vibrate the phone
+    AudioServicesPlaySystemSound (kSystemSoundID_Vibrate);
+}
+
+// A method sent to the delegate when the user clicks a button on an action sheet.
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     //Get the name of the current pressed button
     NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];

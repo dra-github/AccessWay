@@ -136,7 +136,12 @@ NSMutableArray *accesswayDiscoveredPeripherals;
     }
     
     //Add notification when the heading is updated
-    NSDictionary *dictionary = [NSDictionary dictionaryWithObject:bleTagIsAvailable forKey:@"BLEAvailabilityTagStringValue"];
+    //NSDictionary *dictionary = [NSDictionary dictionaryWithObject:bleTagIsAvailable forKey:@"BLEAvailabilityTagStringValue"];
+    NSArray *tempObjects = [NSArray arrayWithObjects:bleTagIsAvailable,stationName, nil];
+    NSArray *tempkeys = [NSArray arrayWithObjects:@"BLEAvailabilityTagStringValue",@"stationNameStringValue", nil];
+    
+    NSDictionary *dictionary = [NSDictionary dictionaryWithObjects:tempObjects forKeys:tempkeys];
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:@"BLETagAvailabilityTagNotification" object:nil userInfo:dictionary];
 }
 
