@@ -161,13 +161,30 @@ bool areBLETagsAvailable = FALSE;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Navigation logic may go here. Create and push another view controller.
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     */
+    switch (indexPath.row) {
+        case 0:
+            //ROBIN'S CODE GOES HERE
+            //Next train arrives
+            break;
+            
+        case 1:
+            //ROBIN'S CODE GOES HERE
+            //Service changes
+            break;
+        
+        case 2:
+            //RAJAN'S CODE GOES HERE
+            //Directions to train
+            break;
+            
+        case 3:
+            //RAJAN'S CODE GOES HERE
+            //Directions to Exit
+            break;
+            
+        default:
+            break;
+    }
 }
 
 // A delegate method that gets the height to use for a row in a specified location.
@@ -222,6 +239,8 @@ bool areBLETagsAvailable = FALSE;
     if ([bleIsAvailable isEqualToString:@"YES"]) {
         NSLog(@"ble available");
         
+        areBLETagsAvailable=TRUE;//ble tags are available
+        
         //Change the options available to the user (4 and 5) when beacons are found
         [userOptionsArray replaceObjectAtIndex:2 withObject:@"Directions To A Train"];
         [userOptionsArray replaceObjectAtIndex:3 withObject:@"Directions To The Exit"];
@@ -258,7 +277,7 @@ bool areBLETagsAvailable = FALSE;
     NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
     //Handle action for the case - Tell Me What It Says
     if  ([buttonTitle isEqualToString:@"Tell Me What It Says"]) {
-        NSLog(@"Will Go to next view controller");
+        //Show the data of the nearest BLE
     }
 }
 
