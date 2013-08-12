@@ -1,0 +1,86 @@
+{
+    "accessway": [
+        {
+            "stationInformation": [
+                {
+                    "name": "West Fourth Street",
+                    "bleCommonName": "LightBlue",
+                    "tagsInStation": ["2301","2302","2303","2304","2305","2306"],
+                    "tagsAvailable": [
+                        {
+                            "tagID": "2301",
+                            "information": [
+                                {
+                                    "North": "You are at the West Fourth Street Station lobby area. This station has uptown and downtown A, B, C, D, E, F and M trains. The turnstiles are to your left. The ticket vending machine is to the left of the turnstiles.",
+                                    "South": "You are at the West Fourth Street Station lobby area. This station has uptown and downtown A, B, C, D, E, F and M trains. The turnstiles are to your right. The ticket vending machine is to the left of the turnstiles.",
+                                    "East": "You are at the West Fourth Street Station lobby area. This station has uptown and downtown A, B, C, D, E, F and M trains. The turnstiles are behind you. The ticket vending machine is to the left of the turnstiles.",
+                                    "West": "You are at the West Fourth Street Station lobby area. This station has uptown and downtown A, B, C, D, E, F and M trains. The turnstiles are in front of you. The ticket vending machine is to the left of the turnstiles.",
+                                    "Unknown": "You are at the West Fourth Street Station lobby area. This station has uptown and downtown A, B, C, D, E, F and M trains."
+                                }
+                            ]
+                        },
+                        {
+                            "tagID": "2302",
+                            "information": [
+                                {
+                                    "North": "You are on the A, C, E, Uptown trains platform. The A train will arrive in front of you. The C and E trains will arrive behind you.",
+                                    "South": "You are on the A, C, E, Uptown trains platform. The A train will arrive behind of you. The C and E trains will arrive in front of you.",
+                                    "East": "You are on the A, C, E, Uptown trains platform. The A train will arrive on the left platform. The C and E trains will arrive on the right platform.",
+                                    "West": "You are on the A, C, E, Uptown trains platform. The A train will arrive on the right platform. The C and E trains will arrive on the left platform.",
+                                    "Unknown": "You are on the A, C, E, Uptown trains platform."
+                                }
+                            ]
+                        },
+                        {
+                            "tagID": "2303",
+                            "information": [
+                                {
+                                    "North": "You are on Mezzanine level. The A, C and E trains platforms are one level up. The D, E, F and M trains platforms is one level down.",
+                                    "South": "You are on Mezzanine level. The A, C and E trains platforms are one level up. The D, E, F and M trains platforms is one level down.",
+                                    "East": "You are on Mezzanine level. The A, C and E trains platforms are one level up. The D, E, F and M trains platforms is one level down.",
+                                    "West": "You are on Mezzanine level. The A, C and E trains platforms are one level up. The D, E, F and M trains platforms is one level down.",
+                                    "Unknown": "You are on Mezzanine level. The A, C and E trains platforms are one level up. The D, E, F and M trains platforms is one level down."
+                                }
+                            ]
+                        },
+                        {
+                            "tagID": "2304",
+                            "information": [
+                                {
+                                    "North": "You are on the Uptown B, D, F and M trains platform. The F and M trains will arrive in front of you. The B and D trains will arrive behind you.",
+                                    "South": "You are on the Uptown B, D, F and M trains platform. The F and M trains will arrive behind you. The B and D trains will arrive in front of you.",
+                                    "East": "You are on the Uptown B, D, F and M trains platform. The F and M trains will arrive to your left. The B and D trains will to your right.",
+                                    "West": "You are on the Uptown B, D, F and M trains platforms. The F and M trains will arrive to your right. The B and D trains will arrive to your left.",
+                                    "Unknown": "You are on the Uptown B, D, F and M trains platform."
+                                }
+                            ]
+                        }
+                    ],
+                    "routeInformation": [
+                        {
+                            "tagID": "2301",
+                            "endPoint": "DIRECTIONS TO UPTOWN F TRAIN",
+                            "completeInformation":["Step1. Cross the turnstiles. Turn right for uptown trains. Walk five steps and turn left. Continue walking on the long corridor till you reach the Uptown A, C, E trains platform.","Step 2. Once you reach the Uptown A, C, E platform, keep walking straight till you reach the staircase in front of you at about 20 steps. Take the staircase down to the Mezzanine level. The Uptown F train platform is one level down the Mezzanine level.","Step 3. Walk straight about 8 steps from the staircase you climbed down till you reach the next staircase. Climb down the stairs to take you to the Uptown F train platform.","Step 4. Once you have reached the Uptown F train platform. The F train will arrive on your right hand side."]           
+                        },
+                        {
+                            "tagID": "2302",
+                            "endPoint": "DIRECTIONS TO UPTOWN F TRAIN",
+                            "completeInformation":["Step 1. Your are on the Uptown A, C, E platform. There are three staircases on this platform that lead to the Mezzanine level. Take any one staircase to reach the Mezzanine level. The Uptown F train platform is one level down the Mezzanine level.","Step 2. Once you are on the Mezzanine level, walk straight about 8 steps from the staircase you climbed down till you reach the next staircase.","Step 3. Climb down the stairs to take you to the Uptown F train platform.","Step 4. Once you are on the Uptown F Train platform, use voice command Location Information to find out which side the train arrives."]          
+                        },
+                        {
+                            "tagID": "2303",
+                            "endPoint": "DIRECTIONS TO UPTOWN F TRAIN",
+                            "completeInformation":["Step 1. You are on the Mezzanine level. The Uptown F train platform is one level down the Mezzanine level. There are five staircases that lead down to the Uptown F trains platform","Step 2. Climb down the stairs to take you to the Uptown F train platform.","Step 3. Once you are on the Uptown F Train platform, use voice command Location Information to find out which side the train arrives."]          
+                        },
+                        {
+                            "tagID": "2304",
+                            "endPoint": "DIRECTIONS TO UPTOWN F TRAIN",
+                            "completeInformation":["You are on the Uptown F Train Platform"]          
+                        }
+                        
+                    ]
+                }
+            ]
+        }
+    ]
+}

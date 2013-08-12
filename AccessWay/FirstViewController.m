@@ -13,7 +13,6 @@
 @end
 
 @implementation FirstViewController
-@synthesize deviceDirectionLabel;//sythesize things related to UI for this ViewController
 
 - (void)viewDidLoad
 {
@@ -30,21 +29,27 @@
 
 #pragma mark - FirstViewController methods
 -(IBAction)startButtonAction:(id)sender{
-    BLEManager *sharedBLEManager = [BLEManager sharedBLEManager];//start scanning for BLE tags
-    CoreLocationManager *sharedCoreLocationManager = [CoreLocationManager sharedCoreLocationManager];//start updating device direction
-    [[NSNotificationCenter defaultCenter]addObserver:self
-                                        selector:@selector(updatedHeadingNotification:)
-                                        name:@"HeadingUpdated"
-                                        object:nil];
+    
+    
 }
 
-#pragma mark - Methods for all NSNotifications
-//A method that gets the current direction of the device when the heading changes are detected in CoreLocationManager
-- (void)updatedHeadingNotification:(NSNotification *)notification //use notification method and logic
+-(void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    NSDictionary *dictionary = [notification userInfo];
-    NSString *headingValueToUse = [dictionary valueForKey:@"HeadingStringValue"];
-    self.deviceDirectionLabel.text = headingValueToUse;
+    //Show the main user options when the user clicks on the "Tell me more about this station" button
+    if([segue.identifier isEqualToString:@"userOptionsSegue"])
+    {
+        MainButtonsViewController *mainButtonsViewController = [segue destinationViewController];
+        //UINavigationController *navigationController =segue.destinationViewController;
+		//MainButtonsViewController *mainButtonsViewController = [[navigationController viewControllers]objectAtIndex:0];
+        //mainButtonsViewController.delegate = self;
+        
+        
+    }
+    
 }
+
+
+
+
 
 @end

@@ -13,7 +13,10 @@
 //Importing all the headers required for CoreBluetooth
 #import <CoreBluetooth/CoreBluetooth.h>
 
-@interface BLEManager : NSObject<CBCentralManagerDelegate,CBPeripheralDelegate>
+//Importing headers required for processing JSON
+#import "AccesswayJSON.h"
+
+@interface BLEManager : NSObject<CBCentralManagerDelegate,CBPeripheralDelegate,AccesswayJSONDelegate>
 
 + (id)sharedBLEManager;
 
@@ -21,5 +24,11 @@
 @property (nonatomic, strong) CBCentralManager *accesswayCBManager;//CBCentralManager
 @property (nonatomic, strong) CBPeripheral *accesswayCBPeripheral;//CBPeriPheral
 @property (nonatomic, strong) NSMutableData *accesswayCBData;//Array for holding data
+
+//Things for interacting with AccesswayJSON
+@property(nonatomic,strong)AccesswayJSON *theAccesswayJSONClass;
+
+//Method for setting the voice commands
+-(void)setVoiceCommand:(NSString *)voiceCommand;
 
 @end

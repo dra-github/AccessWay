@@ -36,50 +36,58 @@
                                 </state>
                                 <connections>
                                     <action selector="startButtonAction:" destination="2" eventType="touchUpInside" id="ctz-t7-S8L"/>
+                                    <segue destination="YKn-WV-Ot0" kind="push" identifier="userOptionsSegue" id="xrx-kD-0Qe"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Unknown" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tFW-7X-FNI">
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="199" id="TIw-Bp-9C5"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Direction:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gS7-mf-hfc">
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="87" id="s92-qB-EA0"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="21" firstAttribute="leading" secondItem="16" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="FUt-Jj-x4E"/>
                             <constraint firstItem="Hp7-9F-2Ca" firstAttribute="leading" secondItem="16" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="Lcf-w8-9C7"/>
-                            <constraint firstItem="gS7-mf-hfc" firstAttribute="top" secondItem="16" secondAttribute="top" constant="20" symbolic="YES" type="default" id="Naj-E4-79w"/>
                             <constraint firstItem="21" firstAttribute="top" secondItem="20" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="OVD-89-R9x"/>
                             <constraint firstAttribute="trailing" secondItem="20" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="Qxj-1L-2Yh"/>
                             <constraint firstItem="20" firstAttribute="leading" secondItem="16" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="Ty9-wx-CyI"/>
-                            <constraint firstItem="tFW-7X-FNI" firstAttribute="top" secondItem="16" secondAttribute="top" constant="20" symbolic="YES" type="default" id="Vdr-rK-ajV"/>
                             <constraint firstAttribute="bottom" secondItem="Hp7-9F-2Ca" secondAttribute="bottom" constant="81" id="bD9-oo-p8o"/>
                             <constraint firstAttribute="trailing" secondItem="21" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="eR0-uq-zSv"/>
                             <constraint firstItem="20" firstAttribute="top" secondItem="16" secondAttribute="top" constant="108" id="hHJ-Nb-aUL"/>
-                            <constraint firstItem="gS7-mf-hfc" firstAttribute="leading" secondItem="16" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="ieL-T1-dlr"/>
-                            <constraint firstAttribute="trailing" secondItem="tFW-7X-FNI" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="s4z-ZX-Rik"/>
                             <constraint firstAttribute="trailing" secondItem="Hp7-9F-2Ca" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="ssH-6a-DHU"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Accessway" id="voH-zy-sWt"/>
-                    <connections>
-                        <outlet property="deviceDirectionLabel" destination="tFW-7X-FNI" id="nvk-sv-Bgf"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="10" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1179" y="-138"/>
+        </scene>
+        <!--Main Buttons View Controller - Accessway-->
+        <scene sceneID="0ri-lf-GWf">
+            <objects>
+                <tableViewController id="YKn-WV-Ot0" customClass="MainButtonsViewController" sceneMemberID="viewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="7w9-AB-jeY">
+                        <rect key="frame" x="0.0" y="64" width="320" height="455"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="AccesswayCell" id="T3C-80-nNX">
+                                <rect key="frame" x="0.0" y="22" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="YKn-WV-Ot0" id="Baq-lY-8k3"/>
+                            <outlet property="delegate" destination="YKn-WV-Ot0" id="jNd-ox-jK4"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Accessway" id="icu-4b-4L0"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="IpN-5I-G7s" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1639" y="-138"/>
         </scene>
         <!--Second View Controller - Second-->
         <scene sceneID="13">
@@ -162,21 +170,6 @@
         <image name="first" width="16" height="16"/>
         <image name="second" width="16" height="16"/>
     </resources>
-    <classes>
-        <class className="FirstViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/FirstViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="startButtonAction:"/>
-                <relationship kind="outlet" name="deviceDirectionLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="NSLayoutConstraint" superclassName="NSObject">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
-        </class>
-        <class className="SecondViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/SecondViewController.h"/>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

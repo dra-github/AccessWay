@@ -36,7 +36,6 @@ dispatch_queue_t backgroundQueueCoreLocation;//for CoreLocation
         accesswayLocationManager.delegate=self;
         backgroundQueueCoreLocation = dispatch_queue_create("com.ard.coreLocation", NULL);//Create queue for CoreLocation
         dispatch_async(backgroundQueueCoreLocation, ^{
-            NSLog(@"in coreLocation dispatch");
             [accesswayLocationManager startUpdatingHeading];
         });
     }
@@ -61,7 +60,7 @@ dispatch_queue_t backgroundQueueCoreLocation;//for CoreLocation
     
     //Add notification when the heading is updated
     NSDictionary *dictionary = [NSDictionary dictionaryWithObject:deviceDirection forKey:@"HeadingStringValue"];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"HeadingUpdated" object:nil userInfo:dictionary];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"HeadingUpdatedNotification" object:nil userInfo:dictionary];
 }
 
 //A delegate method that asks the delegate whether the heading calibration alert should be displayed.
@@ -69,7 +68,7 @@ dispatch_queue_t backgroundQueueCoreLocation;//for CoreLocation
     
     //The direction of the compass is not available
     
-    deviceDirection=@"Unkown";//set device direction to unknown to give general information
+    deviceDirection=@"Unknown";//set device direction to unknown to give general information
     
     return YES;
 }
