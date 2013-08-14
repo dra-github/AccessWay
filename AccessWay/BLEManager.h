@@ -30,6 +30,7 @@
 
 // Things and methods for processing CoreBluetooth data.
 -(int)findAverageRSSIandGetNearestTag;//function to get the average RSSI value of the discovered tags and get the nearest tag;
+-(int)findAverageRSSI;//function to get the average RSSI value of the discovered tags to check for range
 
 //Things for interacting with AccesswayJSON
 @property(nonatomic,strong)AccesswayJSON *theAccesswayJSONClass;

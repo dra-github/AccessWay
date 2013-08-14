@@ -45,10 +45,14 @@ bool hasStationNameChanged = TRUE;
 NSString *deviceDirection;
 
 //Things related to the Timer
-NSTimer *visitedTagsTimer;
+NSTimer *appTimer;
+int appTimerCount=0;
+
+//Objects for the rssiAverageValue
+int strongestRSSIAverageValueIndex = -1;
 
 // Defining constants
-#define TIMER_INTERVAL 60.0 //timer interval
+#define TIMER_INTERVAL 30.0 //timer interval
 
 #pragma mark Singleton Methods
 
@@ -98,8 +102,8 @@ NSTimer *visitedTagsTimer;
                                                   object:nil];
         
         //Timer that clears the visited tags per TIME_INTERVAL. This is to avoid detecting the tags just visited continously
-        if(visitedTagsTimer==nil){
-            visitedTagsTimer = [NSTimer scheduledTimerWithTimeInterval:TIMER_INTERVAL target:self selector:@selector(clearVisitedTagsArray:) userInfo:nil repeats:YES];
+        if(appTimer==nil){
+            appTimer = [NSTimer scheduledTimerWithTimeInterval:TIMER_INTERVAL target:self selector:@selector(handleTimerRelatedEvents:) userInfo:nil repeats:YES];
         }
         
         //Initialize CoreBluetooth capability
@@ -146,11 +150,14 @@ NSTimer *visitedTagsTimer;
     //Handling voice command - LOCATION INFORMATION. Checking for any BLE tags and comparing it with the database to find the current station.
     if([voiceCommand isEqualToString:@"LOCATION INFORMATION"]){
 
-        //Get the name of the station to get minimal information to display and to check if there is a change in the station
-        dispatch_async(backgroundQueueJSON, ^{
-            //NSLog(@"in current station dispatch");
-            [theAccesswayJSONClass getStationName:[advertisementData objectForKey:CBAdvertisementDataLocalNameKey]];
-        });
+        //Get the name of the station to get minimal information to display and to check if there is a change in the station. Do this every 30 seconds
+        if (appTimerCount==1) {
+            dispatch_async(backgroundQueueJSON, ^{
+                //NSLog(@"in current station dispatch");
+                [theAccesswayJSONClass getStationName:[advertisementData objectForKey:CBAdvertisementDataLocalNameKey]];
+            });
+        }
+        
         
         //If the station has been found and the station name has changed, get all the UUIDs of the BLE tags in that station
         if (hasStationNameChanged && ![currentStation isEqualToString:@"Unknown"]) {
@@ -190,31 +197,33 @@ NSTimer *visitedTagsTimer;
             
             //If there is atleast 1 tag available and if it is not part of the visitedTagsArray, find the nearest Tag.
             if (tagsAverageRSSIArray.count>0 && ![visitedTagsArray containsObject:peripheral]){
-            if (rssiValueRecordCounter<100) {
-                rssiValueRecordCounter++;//increment rssiValueRecordCounter
-                [[tagsAverageRSSIArray objectAtIndex:[accesswayDiscoveredPeripherals indexOfObject:peripheral]] addObject:RSSI];//add RSSI value to the array at the index corresponding to the current peripheral
-            }else{
+                if (rssiValueRecordCounter<100) {
+                    rssiValueRecordCounter++;//increment rssiValueRecordCounter
+                    [[tagsAverageRSSIArray objectAtIndex:[accesswayDiscoveredPeripherals indexOfObject:peripheral]] addObject:RSSI];//add RSSI value to the array at the index corresponding to the current peripheral
+                }else{
                 
-                rssiValueRecordCounter=0;//set rssiValueRecordCounter to 0
+                    rssiValueRecordCounter=0;//set rssiValueRecordCounter to 0
+                    
+                    //Only try to connect if the RSSI is less than -100dB. This is an arbitrary number and we will have to find the correct value to use
+                    if (self.findAverageRSSI>-70){
+                        NSLog(@"RSSI average %d",self.findAverageRSSI);
+                    // Calculate smallest average RSSI value of each tag so that the nearest tag can be determined
+                    //int indexOfNearestTag = self.findAverageRSSIandGetNearestTag;
+                        int indexOfNearestTag = strongestRSSIAverageValueIndex;
+                    NSLog(@"nearest tag IS %d",indexOfNearestTag);
                 
-                // Calculate smallest average RSSI value of each tag so that the nearest tag can be determined
-                int indexOfNearestTag = self.findAverageRSSIandGetNearestTag;
-                NSLog(@"nearest tag IS %d",indexOfNearestTag);
+                    [self.accesswayCBManager stopScan];//stop scanning
                 
-                [self.accesswayCBManager stopScan];//stop scanning
+                    //Add the discovered tag to the list of visited tags.
+                    [visitedTagsArray addObject:[accesswayDiscoveredPeripherals objectAtIndex:indexOfNearestTag]];
                 
-                //Add the discovered tag to the list of visited tags.
-                [visitedTagsArray addObject:[accesswayDiscoveredPeripherals objectAtIndex:indexOfNearestTag]];
+                    //Connect to the nearest tag and get local information
+                    self.accesswayCBPeripheral=[accesswayDiscoveredPeripherals objectAtIndex:indexOfNearestTag];//assign peripheral to the viewController's peripheral
+                    self.accesswayCBPeripheral.delegate=self;//assign delegate to viewController's peripheral
                 
-                //Connect to the nearest tag and get local information
-                self.accesswayCBPeripheral=[accesswayDiscoveredPeripherals objectAtIndex:indexOfNearestTag];//assign peripheral to the viewController's peripheral
-                self.accesswayCBPeripheral.delegate=self;//assign delegate to viewController's peripheral
-                
-                [accesswayDiscoveredPeripherals removeAllObjects];//remove all discovered peripherals
-                [tagsAverageRSSIArray removeAllObjects];//remove all RSSI average values
-                
-                [self.accesswayCBManager connectPeripheral:self.accesswayCBPeripheral options:nil];//connect to the peripheral
-            }
+                    [self.accesswayCBManager connectPeripheral:self.accesswayCBPeripheral options:nil];//connect to the peripheral
+                    }
+                }
             }
         }
         
@@ -266,7 +275,7 @@ NSTimer *visitedTagsTimer;
         for (CBService *service in aPeripheral.services) {
             
             dispatch_async(backgroundQueueJSON, ^{
-                NSLog(@"in dispatch");
+                //NSLog(@"in dispatch");
                 
                 [theAccesswayJSONClass getLocationInformationFromTagWithService:service.UUID theDeviceDirection:deviceDirection];
             });
@@ -303,6 +312,32 @@ NSTimer *visitedTagsTimer;
     
     NSLog(@"indexof smallest rssi %d",indexOfSmallestRSSIValue);
     return indexOfSmallestRSSIValue;
+}
+
+/*Function to get the average RSSI value of the discovered tags 
+ PARAMETERS:NONE
+ RETURNS:Strongest RSSI average value
+ */
+-(int)findAverageRSSI{
+    int smallestRSSIAverageValue=-1000;
+    strongestRSSIAverageValueIndex=-1;
+    for (int i=0; i<tagsAverageRSSIArray.count; i++) {
+        int tempAverageNumber = 0;
+        for (int j=0; j<[[tagsAverageRSSIArray objectAtIndex:i] count]; j++) {
+            tempAverageNumber+=[[[tagsAverageRSSIArray objectAtIndex:i] objectAtIndex:j] integerValue];
+        }
+        int total = [[tagsAverageRSSIArray objectAtIndex:i] count];
+        int average = tempAverageNumber/total;
+        
+        //NSLog(@"avg %d",(tempAverageNumber/(int)[[tagsAverageRSSIArray objectAtIndex:i] count]));
+        if (average>smallestRSSIAverageValue) {
+            smallestRSSIAverageValue=average;
+            strongestRSSIAverageValueIndex=i;
+        }
+        NSLog(@"tempavgno %d index %d",(tempAverageNumber/(int)[[tagsAverageRSSIArray objectAtIndex:i] count]),i);
+    }
+    
+    return smallestRSSIAverageValue;
 }
 
 #pragma mark - Methods for all NSNotifications
@@ -374,16 +409,22 @@ NSTimer *visitedTagsTimer;
     hasStationNameChanged=TRUE;
     currentStation=@"Unknown";
     
-    //[accesswayDiscoveredPeripherals removeAllObjects];//remove all discovered peripherals
-    //[tagsAverageRSSIArray removeAllObjects];//remove all RSSI average values
+    [accesswayDiscoveredPeripherals removeAllObjects];//remove all discovered peripherals
+    [tagsAverageRSSIArray removeAllObjects];//remove all RSSI average values
     
     [self.accesswayCBManager scanForPeripheralsWithServices:nil options:@{CBCentralManagerScanOptionAllowDuplicatesKey : @YES }];
 }
 
 #pragma mark - Timer related Methods
-//Timer selector method that clears the visitedTagsArray
--(void)clearVisitedTagsArray:(NSTimer *)timer{
-    [visitedTagsArray removeAllObjects];
+//Timer selector method that handles different conditions and logic
+-(void)handleTimerRelatedEvents:(NSTimer *)timer{
+    
+    appTimerCount++;
+    
+    if (appTimerCount==2) {
+        [visitedTagsArray removeAllObjects];//clear the visitedTagsArray
+        appTimerCount=0;
+    }
 }
 
 @end

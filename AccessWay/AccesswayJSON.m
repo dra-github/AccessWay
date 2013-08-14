@@ -134,7 +134,7 @@ NSString *currentStation = @"Unknown";
  RETURNS:NONE
  */
 - (void)getLocationInformationFromTagWithService:(CBUUID *)serviceUUID theDeviceDirection:(NSString *)deviceDirection{
-    NSLog(@"in getlocationinfo");
+    //NSLog(@"in getlocationinfo");
     NSString *locationInformation = @"unknown";
     NSString *selectedTagID = @"unknown";
     NSArray *tagsInStationArray=[currentStationDictionary objectForKey:@"tagsAvailable"];
