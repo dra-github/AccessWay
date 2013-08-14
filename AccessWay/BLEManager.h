@@ -16,6 +16,9 @@
 //Importing headers required for processing JSON
 #import "AccesswayJSON.h"
 
+//Importing all the headers required for CoreLocationManager
+#import "CoreLocationManager.h"
+
 @interface BLEManager : NSObject<CBCentralManagerDelegate,CBPeripheralDelegate,AccesswayJSONDelegate>
 
 + (id)sharedBLEManager;
@@ -24,6 +27,9 @@
 @property (nonatomic, strong) CBCentralManager *accesswayCBManager;//CBCentralManager
 @property (nonatomic, strong) CBPeripheral *accesswayCBPeripheral;//CBPeriPheral
 @property (nonatomic, strong) NSMutableData *accesswayCBData;//Array for holding data
+
+// Things and methods for processing CoreBluetooth data.
+-(int)findAverageRSSIandGetNearestTag;//function to get the average RSSI value of the discovered tags and get the nearest tag;
 
 //Things for interacting with AccesswayJSON
 @property(nonatomic,strong)AccesswayJSON *theAccesswayJSONClass;

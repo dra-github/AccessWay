@@ -11,6 +11,9 @@
 @implementation AccesswayJSON
 @synthesize accesswayJSONDictionary,currentStationDictionary,allStationInformationArray;//synthesize object for hold the data from the JSON object
 
+//Objects for holding current station
+NSString *currentStation = @"Unknown";
+
 -(void)prepareJSON{
     @try {
         NSFileManager *fileMgr = [NSFileManager defaultManager];
@@ -67,7 +70,7 @@
  RETURNS:NONE
  */
 - (void) getStationName:(NSString*) tagName{
-    NSString *stationName = @"unknown";
+    NSString *stationName = @"Unknown";
     
     BOOL isBLECommonNameFound = FALSE;
     
@@ -76,8 +79,9 @@
         //the current station is found
         if ([tagName isEqualToString:[self.currentStationDictionary objectForKey:@"bleCommonName"]]) {
             stationName=[currentStationDictionary objectForKey:@"name"];
+            currentStation=stationName;//Set the currentStation
             isBLECommonNameFound=TRUE;
-            NSLog(@"ble common name found");
+            //NSLog(@"ble common name found");
         }
     }
     
@@ -113,7 +117,7 @@
         }
     }
     
-    NSLog(@"UUIDofTagsInStationArray %@",UUIDofTagsInStationArray);
+    //NSLog(@"UUIDofTagsInStationArray %@",UUIDofTagsInStationArray);
     
     //If a match is found, retun array with UUID object else return an array with unknown
     if (UUIDofTagsInStationArray.count>0) {
@@ -127,12 +131,12 @@
 
 /*Function to get location information based on tag service and current direction
  PARAMETERS:CBUUID serviceUUID: service UUID of the connected tag, NSString deviceDirection: the current device direction
- RETURNS:NSMutableArray tagsInStationArray: all the tags in the station
+ RETURNS:NONE
  */
 - (void)getLocationInformationFromTagWithService:(CBUUID *)serviceUUID theDeviceDirection:(NSString *)deviceDirection{
     NSLog(@"in getlocationinfo");
     NSString *locationInformation = @"unknown";
-    
+    NSString *selectedTagID = @"unknown";
     NSArray *tagsInStationArray=[currentStationDictionary objectForKey:@"tagsAvailable"];
     
     //Search for relevant information
@@ -147,14 +151,39 @@
         }
     }
     
-    [self.delegate didFindLocationInformation:self theLocationInformation:locationInformation];
+    [self.delegate didFindLocationInformation:self theLocationInformation:locationInformation theStationName:currentStation theTagID:selectedTagID];
 }
+
+/*Function to get location information based on tag service and current direction
+ PARAMETERS:CBUUID serviceUUID: service UUID of the connected tag, NSString deviceDirection: the current device direction
+ RETURNS:NONE
+ */
+/*- (void)getLocationInformationFromTagWithService:(CBUUID *)serviceUUID theDeviceDirection:(NSString *)deviceDirection{
+    NSLog(@"in getlocationinfo");
+    NSString *locationInformation = @"unknown";
+    
+    NSArray *tagsInStationArray=[currentStationDictionary objectForKey:@"tagsAvailable"];
+    
+    //Search for relevant information
+    for (int i=0; i<tagsInStationArray.count; i++) {
+        NSString *tagID = [[tagsInStationArray objectAtIndex:i] objectForKey:@"tagID"];
+        //find match for serviceUUID
+        if ([serviceUUID isEqual:[CBUUID UUIDWithString:tagID]]) {
+            NSLog(@"tagID is %@",[[tagsInStationArray objectAtIndex:i] objectForKey:@"tagID"]);
+            
+            locationInformation = [[[[tagsInStationArray objectAtIndex:i]objectForKey:@"information"] objectAtIndex:0] objectForKey:deviceDirection];
+            NSLog(@"loca info %@",locationInformation);
+        }
+    }
+    
+    [self.delegate didFindLocationInformation:self theLocationInformation:locationInformation];
+}*/
 
 /*Function to get complete route information based on nearest tag and end destination
  PARAMETERS:CBUUID serviceUUID: service UUID of the connected tag
  RETURNS:NONE
  */
-- (void)getCompleteRouteInformationFromTagWithService:(CBUUID *)serviceUUID destination:(NSString *)destination{
+/*- (void)getCompleteRouteInformationFromTagWithService:(CBUUID *)serviceUUID destination:(NSString *)destination{
     NSLog(@"in getlocationinfo");
     NSArray *completeRouteInformation;
     
@@ -173,6 +202,6 @@
     }
     
     [self.delegate didFindCompleteRouteInformation:self theRouteInformation:completeRouteInformation];
-}
+}*/
 
 @end

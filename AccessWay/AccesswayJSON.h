@@ -19,7 +19,8 @@
 @protocol AccesswayJSONDelegate <NSObject>
 @optional
 - (void)didFindCurrentStation:(AccesswayJSON *)controller theStationName:(NSString *)stationName;//A delegate method that informs the app that a station matching the BLE tag has been found
-- (void)didFindLocationInformation:(AccesswayJSON *)controller theLocationInformation:(NSString *)locationInformation;//A delegate method that informs the app that location information corresponding to the nearest tag has been found
+//- (void)didFindLocationInformation:(AccesswayJSON *)controller theLocationInformation:(NSString *)locationInformation;//A delegate method that informs the app that location information corresponding to the nearest tag has been found
+- (void)didFindLocationInformation:(AccesswayJSON *)controller theLocationInformation:(NSString *)locationInformation theStationName:(NSString *)stationName theTagID:(NSString *)theSelectedTagID;//A delegate method that informs the app that location information corresponding to the nearest tag has been found along with the station Name and selected TagID
 - (void)didFindCompleteRouteInformation:(AccesswayJSON *)controller theRouteInformation:(NSArray *)routeInformationArray;//A delegate method that informs the app that the complete route information from the nearest tag to the destination has been found
 @end
 
@@ -47,9 +48,8 @@
 - (void)getLocationInformationFromTagWithService:(CBUUID *)serviceUUID theDeviceDirection:(NSString *)deviceDirection;
 
 //Function to get complete route information based on nearest tag and end destination
-- (void)getCompleteRouteInformationFromTagWithService:(CBUUID *)serviceUUID destination:(NSString *)destination;
+//- (void)getCompleteRouteInformationFromTagWithService:(CBUUID *)serviceUUID destination:(NSString *)destination;
 
-//Function to get local information based on the nearest tag detected
-//- (void) getLocalTagInformation:(NSString*) tagName;
+
 
 @end

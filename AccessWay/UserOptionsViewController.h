@@ -15,12 +15,6 @@
 //Importing all the headers required for BLEManager
 #import "BLEManager.h"
 
-//Importing all the headers required for CoreLocationManager
-#import "CoreLocationManager.h"
-
-//Importing all the headers required for WiFiManager
-#import "WiFiManager.h"
-
 //Importing all the headers required for AudioToolbox
 #import <AudioToolbox/AudioToolbox.h>
 

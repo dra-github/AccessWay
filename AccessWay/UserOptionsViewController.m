@@ -22,15 +22,18 @@ NSMutableArray *userOptionsArray;
 //Objects for the device direction
 NSString *deviceDirection;
 
-//Things for checking BLE Tags availability
-bool areBLETagsAvailable = FALSE;
+//Objects for storing current station name
+NSString *theCurrentStation=@"Unknown";
+
+//Objects for storing current location information from the nearest BLE tag
+NSString *theCurrentLocationInformation=@"Unknown";
 
 -(id)initWithCoder:(NSCoder *)aDecoder
 {
     if (self = [super initWithCoder:aDecoder]) {
         //Initialize the array that holds all the user information
-        userOptionsArray = [[NSMutableArray alloc]initWithObjects:@"Tell Me When The Next Train Arrives", @"Service Changes For This Station", @"Directions To A Train - Disabled", @"Directions To The Exit - Disabled", nil];
-        
+        userOptionsArray = [[NSMutableArray alloc]initWithObjects:@"Tell Me When The Next Train Arrives", @"Service Changes For This Station", @"Directions To Train - Disabled", @"Directions To The Exit - Disabled", nil];
+        self.navigationItem.backBarButtonItem=nil;
     }
     
     return self;
@@ -41,8 +44,13 @@ bool areBLETagsAvailable = FALSE;
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+
     }
     return self;
+}
+
+- (void) viewWillAppear:(BOOL)animated{
+    self.navigationItem.hidesBackButton = YES;//hide the back button
 }
 
 - (void)viewDidLoad
@@ -50,36 +58,14 @@ bool areBLETagsAvailable = FALSE;
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     
-    //Check for internet connection. ROBIN's CODE TO CHECK FOR WIFI/CELLULAR CONNECTION
-    WiFiManager *sharedWifiManager = [WiFiManager sharedWiFiManager];
-    
     //Start scanning for BLE tags
     BLEManager *sharedBLEManager = [BLEManager sharedBLEManager];
-    [sharedBLEManager setVoiceCommand:@"CURRENT STATION"];//This uses voice commands similar to previous prototype. Can be replaced later.
+    [sharedBLEManager setVoiceCommand:@"LOCATION INFORMATION"];//This uses voice commands similar to previous prototype. Can be replaced later.
     
-    //Start updating device direction
-    CoreLocationManager *sharedCoreLocationManager = [CoreLocationManager sharedCoreLocationManager];
-    
-    //Add NSNotification for checking the internet connection
-    //NEED TO FIX LATER
-    /*[[NSNotificationCenter defaultCenter]addObserver:self
-     selector:@selector(updatedInternetConnectionNotification:)
-     name:@"InternetAvailabilityNotification"
-     object:nil];
-     */
-    
-    //Add NSNotification for checking the device direction
+    //Add NSNotification for checking for local information
     [[NSNotificationCenter defaultCenter]addObserver:self
-                                            selector:@selector(updatedHeadingNotification:)
-                                                name:@"HeadingUpdatedNotification"
-                                              object:nil];
-    
-    
-    
-    //Add NSNotification for checking the device direction
-    [[NSNotificationCenter defaultCenter]addObserver:self
-                                            selector:@selector(updatedBLEAvailableNotification:)
-                                                name:@"BLETagAvailabilityTagNotification"
+                                            selector:@selector(updatedLocationInformationNotification:)
+                                                name:@"LocationInformationNotification"
                                               object:nil];
 }
 
@@ -100,17 +86,17 @@ bool areBLETagsAvailable = FALSE;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"AccesswayCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
     cell.textLabel.text=[userOptionsArray objectAtIndex:indexPath.row];
     
     //The third cell disabled if there are no beacons
-    if (indexPath.row==2 && !areBLETagsAvailable) {
+    if (indexPath.row==2) {
         [cell setUserInteractionEnabled:NO];
     }
     
     //The fourth cell disabled if there are no beacons
-    if (indexPath.row==3 && !areBLETagsAvailable) {
+    if (indexPath.row==3) {
         [cell setUserInteractionEnabled:NO];
     }
 
@@ -208,60 +194,32 @@ bool areBLETagsAvailable = FALSE;
 }*/
 
 #pragma mark - Methods for all NSNotifications
-//A method that checks whether there is an internet connection available
-//NEED TO FIX LATER
-- (void)updatedInternetConnectionNotification:(NSNotification *)notification //use notification method and logic
+//A method that gets called if there is local information available from the nearest BLE
+- (void)updatedLocationInformationNotification:(NSNotification *)notification //use notification method and logic
 {
-    NSLog(@"in updatedInternetConnectionNotification");
-    NSDictionary *dictionary1 = [notification userInfo];
-    NSString *temp = [dictionary1 valueForKey:@"InternetStatusString"];
-}
-
-//A method that gets the current direction of the device when the heading changes are detected in CoreLocationManager
-- (void)updatedHeadingNotification:(NSNotification *)notification //use notification method and logic
-{
-    NSLog(@"in updatedHeadingNotification");
+    NSLog(@"in updatedLocationInformationNotification");
     NSDictionary *dictionary = [notification userInfo];
-    deviceDirection = [dictionary valueForKey:@"HeadingStringValue"];
+    theCurrentLocationInformation = [dictionary valueForKey:@"LocationInformationString"];
+    theCurrentStation = [dictionary valueForKey:@"StationNameString"];
+        
+    //Change the options available to the user (4 and 5) when beacons are found
+    [userOptionsArray replaceObjectAtIndex:2 withObject:@"Directions To A Train"];
+    [userOptionsArray replaceObjectAtIndex:3 withObject:@"Directions To The Exit"];
+        
+    //Reload the table with the new options
+    [self.tableView reloadData];
+        
+    //Enable clicking the of the 3 and 4 cells
+    [[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]]setUserInteractionEnabled:YES];
+    [[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]]setUserInteractionEnabled:YES];
+        
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Accessway Beacon Found"
+                                                            delegate:self
+                                                    cancelButtonTitle:@"Ignore"
+                                                destructiveButtonTitle:nil
+                                                    otherButtonTitles:@"Tell Me What It Says", nil];
+    [actionSheet showInView:[UIApplication sharedApplication].keyWindow];
     
-}
-
-
-//A method that checks if there is any BLE Tags in the vicinity
-- (void)updatedBLEAvailableNotification:(NSNotification *)notification //use notification method and logic
-{
-    NSLog(@"in updatedBLEAvailableNotification");
-    NSDictionary *dictionary = [notification userInfo];
-    NSString *bleIsAvailable = [dictionary valueForKey:@"BLEAvailabilityTagStringValue"];
-    NSString *theStationName = [dictionary valueForKey:@"stationNameStringValue"];
-    
-    //If a valid BLE tag is found, show a UI Action Sheet
-    if ([bleIsAvailable isEqualToString:@"YES"]) {
-        NSLog(@"ble available");
-        
-        areBLETagsAvailable=TRUE;//ble tags are available
-        
-        //Change the options available to the user (4 and 5) when beacons are found
-        [userOptionsArray replaceObjectAtIndex:2 withObject:@"Directions To A Train"];
-        [userOptionsArray replaceObjectAtIndex:3 withObject:@"Directions To The Exit"];
-        
-        //Update Information
-        self.bleInformationLabel.text=theStationName;
-        
-        //Reload the table with the new options
-        [self.tableView reloadData];
-        
-        //Enable clicking the of the 3 and 4 cells
-        [[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]]setUserInteractionEnabled:YES];
-        [[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]]setUserInteractionEnabled:YES];
-        
-        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Accessway Beacon Found"
-                                                                 delegate:self
-                                                        cancelButtonTitle:@"Ignore"
-                                                   destructiveButtonTitle:nil
-                                                        otherButtonTitles:@"Tell Me What It Says", nil];
-        [actionSheet showInView:[UIApplication sharedApplication].keyWindow];
-    }
 }
 
 #pragma mark - UIActionSheet Methods
@@ -277,8 +235,16 @@ bool areBLETagsAvailable = FALSE;
     NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
     //Handle action for the case - Tell Me What It Says
     if  ([buttonTitle isEqualToString:@"Tell Me What It Says"]) {
-        //Show the data of the nearest BLE
+        //Show the location information of the nearest BLE
+        self.bleInformationLabel.text=theCurrentLocationInformation;
     }
+    else if ([buttonTitle isEqualToString:@"Ignore"]){
+        //Show minimal information - Station Name
+        self.bleInformationLabel.text=theCurrentStation;
+    }
+    
+    //Send notification to resume scanning
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"ResumeScanningNotification" object:nil userInfo:nil];
 }
 
 - (void)didReceiveMemoryWarning

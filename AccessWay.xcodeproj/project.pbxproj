@@ -27,7 +27,6 @@
 		DD4DC92217B715F400E96240 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD4DC92117B715F400E96240 /* CoreBluetooth.framework */; };
 		DD4DC92517B7179700E96240 /* CoreLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DD4DC92417B7179700E96240 /* CoreLocationManager.m */; };
 		DD4DC92717B71C7F00E96240 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD4DC92617B71C7E00E96240 /* CoreLocation.framework */; };
-		DD4DC92A17B7D6F700E96240 /* WiFiManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DD4DC92917B7D6F700E96240 /* WiFiManager.m */; };
 		DD4DC93317B822FF00E96240 /* accesswayJSON.json in Resources */ = {isa = PBXBuildFile; fileRef = DD4DC93217B822FF00E96240 /* accesswayJSON.json */; };
 		DD4DC93417B828B800E96240 /* AccesswayJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = DD4DC93117B820D800E96240 /* AccesswayJSON.m */; };
 		DD4DC93617B862F700E96240 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD4DC93517B862F700E96240 /* AudioToolbox.framework */; };
@@ -63,8 +62,6 @@
 		DD4DC92317B7179700E96240 /* CoreLocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreLocationManager.h; sourceTree = "<group>"; };
 		DD4DC92417B7179700E96240 /* CoreLocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreLocationManager.m; sourceTree = "<group>"; };
 		DD4DC92617B71C7E00E96240 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
-		DD4DC92817B7D6F700E96240 /* WiFiManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WiFiManager.h; sourceTree = "<group>"; };
-		DD4DC92917B7D6F700E96240 /* WiFiManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WiFiManager.m; sourceTree = "<group>"; };
 		DD4DC93017B820D800E96240 /* AccesswayJSON.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AccesswayJSON.h; sourceTree = "<group>"; };
 		DD4DC93117B820D800E96240 /* AccesswayJSON.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AccesswayJSON.m; sourceTree = "<group>"; };
 		DD4DC93217B822FF00E96240 /* accesswayJSON.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = accesswayJSON.json; sourceTree = "<group>"; };
@@ -190,8 +187,6 @@
 				DD4DC91D17B70DDB00E96240 /* BLEManager.m */,
 				DD4DC92317B7179700E96240 /* CoreLocationManager.h */,
 				DD4DC92417B7179700E96240 /* CoreLocationManager.m */,
-				DD4DC92817B7D6F700E96240 /* WiFiManager.h */,
-				DD4DC92917B7D6F700E96240 /* WiFiManager.m */,
 			);
 			name = Singletons;
 			sourceTree = "<group>";
@@ -290,7 +285,6 @@
 				DD4DC91017B7091300E96240 /* SecondViewController.m in Sources */,
 				DD4DC91E17B70DDB00E96240 /* BLEManager.m in Sources */,
 				DD4DC92517B7179700E96240 /* CoreLocationManager.m in Sources */,
-				DD4DC92A17B7D6F700E96240 /* WiFiManager.m in Sources */,
 				DD4DC93D17B930A600E96240 /* UserOptionsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -414,6 +408,7 @@
 				DD4DC91917B7091300E96240 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
