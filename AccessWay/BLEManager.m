@@ -46,7 +46,7 @@ NSString *deviceDirection;
 
 //Things related to the Timer
 NSTimer *appTimer;
-int appTimerCount=0;
+int appTimerCount=1;
 
 //Objects for the rssiAverageValue
 int strongestRSSIAverageValueIndex = -1;

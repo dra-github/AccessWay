@@ -28,6 +28,8 @@ NSString *theCurrentStation=@"Unknown";
 //Objects for storing current location information from the nearest BLE tag
 NSString *theCurrentLocationInformation=@"Unknown";
 
+UIAlertView *actionSheet;
+
 -(id)initWithCoder:(NSCoder *)aDecoder
 {
     if (self = [super initWithCoder:aDecoder]) {
@@ -67,6 +69,12 @@ NSString *theCurrentLocationInformation=@"Unknown";
                                             selector:@selector(updatedLocationInformationNotification:)
                                                 name:@"LocationInformationNotification"
                                               object:nil];
+    
+    actionSheet = [[UIAlertView alloc] initWithTitle:@"Accessway Beacon Found"
+                                             message:@""
+                                            delegate:self
+                                   cancelButtonTitle:@"Ignore"
+                                   otherButtonTitles:@"Tell Me What It Says", nil];
 }
 
 #pragma mark - Table view data source
@@ -213,24 +221,30 @@ NSString *theCurrentLocationInformation=@"Unknown";
     [[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]]setUserInteractionEnabled:YES];
     [[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]]setUserInteractionEnabled:YES];
         
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Accessway Beacon Found"
+    /*actionSheet = [[UIAlertView alloc] initWithTitle:@"Accessway Beacon Found"
                                                             delegate:self
                                                     cancelButtonTitle:@"Ignore"
                                                 destructiveButtonTitle:nil
-                                                    otherButtonTitles:@"Tell Me What It Says", nil];
-    [actionSheet showInView:[UIApplication sharedApplication].keyWindow];
+                                                    otherButtonTitles:@"Tell Me What It Says", nil];*/
     
+    
+    //[actionSheet showInView:[UIApplication sharedApplication].keyWindow];
+    [actionSheet performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:YES];
 }
 
-#pragma mark - UIActionSheet Methods
+#pragma mark - UIAlertView Methods
+//-(void)show{
+  //  [actionSheet show];
+//}
+
 // A method sent to the delegate after an action sheet is presented to the user.
-- (void)didPresentActionSheet:(UIActionSheet *)actionSheet{
+- (void)didPresentActionSheet:(UIAlertView *)actionSheet{
     //Vibrate the phone
     AudioServicesPlaySystemSound (kSystemSoundID_Vibrate);
 }
 
 // A method sent to the delegate when the user clicks a button on an action sheet.
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
     //Get the name of the current pressed button
     NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
     //Handle action for the case - Tell Me What It Says

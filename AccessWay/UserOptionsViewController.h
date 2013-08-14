@@ -18,7 +18,7 @@
 //Importing all the headers required for AudioToolbox
 #import <AudioToolbox/AudioToolbox.h>
 
-@interface UserOptionsViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIActionSheetDelegate>
+@interface UserOptionsViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIAlertViewDelegate>
 
 //UI for this ViewController
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
