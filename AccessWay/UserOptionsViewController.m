@@ -71,7 +71,7 @@ UIAlertView *actionSheet;
                                               object:nil];
     
     actionSheet = [[UIAlertView alloc] initWithTitle:@"Accessway Beacon Found"
-                                             message:@""
+                                             message:@"What would you like to do?"
                                             delegate:self
                                    cancelButtonTitle:@"Ignore"
                                    otherButtonTitles:@"Tell Me What It Says", nil];
@@ -210,38 +210,15 @@ UIAlertView *actionSheet;
     theCurrentLocationInformation = [dictionary valueForKey:@"LocationInformationString"];
     theCurrentStation = [dictionary valueForKey:@"StationNameString"];
         
-    //Change the options available to the user (4 and 5) when beacons are found
-    [userOptionsArray replaceObjectAtIndex:2 withObject:@"Directions To A Train"];
-    [userOptionsArray replaceObjectAtIndex:3 withObject:@"Directions To The Exit"];
-        
-    //Reload the table with the new options
-    [self.tableView reloadData];
-        
-    //Enable clicking the of the 3 and 4 cells
-    [[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]]setUserInteractionEnabled:YES];
-    [[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]]setUserInteractionEnabled:YES];
-        
-    /*actionSheet = [[UIAlertView alloc] initWithTitle:@"Accessway Beacon Found"
-                                                            delegate:self
-                                                    cancelButtonTitle:@"Ignore"
-                                                destructiveButtonTitle:nil
-                                                    otherButtonTitles:@"Tell Me What It Says", nil];*/
-    
-    
-    //[actionSheet showInView:[UIApplication sharedApplication].keyWindow];
-    [actionSheet performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:YES];
+    [actionSheet performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:YES];//Update the UI on the main thread
 }
 
 #pragma mark - UIAlertView Methods
-//-(void)show{
-  //  [actionSheet show];
-//}
-
 // A method sent to the delegate after an action sheet is presented to the user.
-- (void)didPresentActionSheet:(UIAlertView *)actionSheet{
+/*- (void)didPresentAlertView:(UIAlertView *)actionSheet{
     //Vibrate the phone
     AudioServicesPlaySystemSound (kSystemSoundID_Vibrate);
-}
+}*/
 
 // A method sent to the delegate when the user clicks a button on an action sheet.
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
@@ -251,10 +228,35 @@ UIAlertView *actionSheet;
     if  ([buttonTitle isEqualToString:@"Tell Me What It Says"]) {
         //Show the location information of the nearest BLE
         self.bleInformationLabel.text=theCurrentLocationInformation;
+        
+        //Enable options in the table
+        //Important - It is important to update the table AFTER the user selects options from the UIAlert. Putting this before the UIAlert shows causes the "[ios sdk UITableTextAccessibilityElement accessibilityContainer]message sent to deallocated instance" error. This is because the tableView reloadData causes cells to deallocate when the UIAlert is being fired
+        //Change the options available to the user (4 and 5) when beacons are found
+        [userOptionsArray replaceObjectAtIndex:2 withObject:@"Directions To A Train"];
+        [userOptionsArray replaceObjectAtIndex:3 withObject:@"Directions To The Exit"];
+        
+        //Reload the table with the new options
+        [self.tableView reloadData];
+        
+        //Enable clicking the of the 3 and 4 cells
+        [[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]]setUserInteractionEnabled:YES];
+        [[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]]setUserInteractionEnabled:YES];
     }
     else if ([buttonTitle isEqualToString:@"Ignore"]){
         //Show minimal information - Station Name
         self.bleInformationLabel.text=theCurrentStation;
+        
+        //Disable options in the table
+        //Change the options available to the user (4 and 5) when beacons are found
+        [userOptionsArray replaceObjectAtIndex:2 withObject:@"Directions To Train - Disabled"];
+        [userOptionsArray replaceObjectAtIndex:3 withObject:@"Directions To The Exit - Disabled"];
+        
+        //Reload the table with the new options
+        [self.tableView reloadData];
+        
+        //Enable clicking the of the 3 and 4 cells
+        [[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]]setUserInteractionEnabled:NO];
+        [[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]]setUserInteractionEnabled:NO];
     }
     
     //Send notification to resume scanning
