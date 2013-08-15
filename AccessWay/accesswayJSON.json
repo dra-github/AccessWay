@@ -11,10 +11,10 @@
                             "tagID": "2301",
                             "information": [
                                 {
-                                    "North": "You are at the West Fourth Street Station lobby area. This station has uptown and downtown A, B, C, D, E, F and M trains. The turnstiles are to your left. The ticket vending machine is to the left of the turnstiles.",
-                                    "South": "You are at the West Fourth Street Station lobby area. This station has uptown and downtown A, B, C, D, E, F and M trains. The turnstiles are to your right. The ticket vending machine is to the left of the turnstiles.",
-                                    "East": "You are at the West Fourth Street Station lobby area. This station has uptown and downtown A, B, C, D, E, F and M trains. The turnstiles are behind you. The ticket vending machine is to the left of the turnstiles.",
-                                    "West": "You are at the West Fourth Street Station lobby area. This station has uptown and downtown A, B, C, D, E, F and M trains. The turnstiles are in front of you. The ticket vending machine is to the left of the turnstiles.",
+                                    "North": "You are at the West Fourth Street Station lobby area. This station has uptown and downtown A, B, C, D, E, F and M trains. The turnstiles are in front of you. The ticket vending machine is to the left of the turnstiles.",
+                                    "South": "You are at the West Fourth Street Station lobby area. This station has uptown and downtown A, B, C, D, E, F and M trains. The turnstiles are behind you. The ticket vending machine is to the left of the turnstiles.",
+                                    "East": "You are at the West Fourth Street Station lobby area. This station has uptown and downtown A, B, C, D, E, F and M trains. The turnstiles are to your left. The ticket vending machine is to the left of the turnstiles.",
+                                    "West": "You are at the West Fourth Street Station lobby area. This station has uptown and downtown A, B, C, D, E, F and M trains. The turnstiles are to your right. The ticket vending machine is to the left of the turnstiles.",
                                     "Unknown": "You are at the West Fourth Street Station lobby area. This station has uptown and downtown A, B, C, D, E, F and M trains."
                                 }
                             ]
@@ -23,10 +23,10 @@
                             "tagID": "2302",
                             "information": [
                                 {
-                                    "North": "You are on the A, C, E, Uptown trains platform. The A train will arrive in front of you. The C and E trains will arrive behind you.",
-                                    "South": "You are on the A, C, E, Uptown trains platform. The A train will arrive behind of you. The C and E trains will arrive in front of you.",
-                                    "East": "You are on the A, C, E, Uptown trains platform. The A train will arrive on the left platform. The C and E trains will arrive on the right platform.",
-                                    "West": "You are on the A, C, E, Uptown trains platform. The A train will arrive on the right platform. The C and E trains will arrive on the left platform.",
+                                    "North": "You are on the A, C, E, Uptown trains platform. The A train will arrive on the right platform. The C and E trains will arrive on the left platform.",
+                                    "South": "You are on the A, C, E, Uptown trains platform. The A train will arrive on the left platform. The C and E trains will arrive on the right platform.",
+                                    "East": "You are on the A, C, E, Uptown trains platform. The A train will arrive in front of you. The C and E trains will arrive behind you.",
+                                    "West": "You are on the A, C, E, Uptown trains platform. The A train will arrive behind you. The C and E trains will arrive on in front of you.",
                                     "Unknown": "You are on the A, C, E, Uptown trains platform."
                                 }
                             ]
@@ -47,10 +47,10 @@
                             "tagID": "2304",
                             "information": [
                                 {
-                                    "North": "You are on the Uptown B, D, F and M trains platform. The F and M trains will arrive in front of you. The B and D trains will arrive behind you.",
-                                    "South": "You are on the Uptown B, D, F and M trains platform. The F and M trains will arrive behind you. The B and D trains will arrive in front of you.",
-                                    "East": "You are on the Uptown B, D, F and M trains platform. The F and M trains will arrive to your left. The B and D trains will to your right.",
-                                    "West": "You are on the Uptown B, D, F and M trains platforms. The F and M trains will arrive to your right. The B and D trains will arrive to your left.",
+                                    "North": "You are on the Uptown B, D, F and M trains platform. The F and M trains will arrive on the right platform. The B and D trains will arrive on the left platform.",
+                                    "South": "You are on the Uptown B, D, F and M trains platform. The F and M trains will arrive on the left platform. The B and D trains will arrive on the right platform.",
+                                    "East": "You are on the Uptown B, D, F and M trains platform. The F and M trains will arrive in front of you. The B and D trains will arrive behind you.",
+                                    "West": "You are on the Uptown B, D, F and M trains platforms. The F and M trains will arrive behind you. The B and D trains will arrive in front of you.",
                                     "Unknown": "You are on the Uptown B, D, F and M trains platform."
                                 }
                             ]
