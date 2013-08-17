@@ -31,7 +31,6 @@
 // Things and methods for processing CoreBluetooth data.
 -(void)startScanForBLETags;//method to start scanning for BLE Tags
 -(void)stopScanForBLETags;//method to stop scanning for BLE Tags
--(int)findAverageRSSIandGetNearestTag;//function to get the average RSSI value of the discovered tags and get the nearest tag;
 -(int)findAverageRSSI;//function to get the average RSSI value of the discovered tags to check for range
 
 //Things for interacting with AccesswayJSON
