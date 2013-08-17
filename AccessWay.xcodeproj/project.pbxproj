@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DD4314B117BF168C00F84FAF /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD4314B017BF168C00F84FAF /* AVFoundation.framework */; };
+		DD4314B317BF16EA00F84FAF /* beep-7.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DD4314B217BF16EA00F84FAF /* beep-7.mp3 */; };
 		DD4DC8ED17B7091200E96240 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD4DC8EC17B7091200E96240 /* UIKit.framework */; };
 		DD4DC8EF17B7091200E96240 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD4DC8EE17B7091200E96240 /* Foundation.framework */; };
 		DD4DC8F117B7091200E96240 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD4DC8F017B7091200E96240 /* CoreGraphics.framework */; };
@@ -34,6 +36,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		DD4314B017BF168C00F84FAF /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		DD4314B217BF16EA00F84FAF /* beep-7.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "beep-7.mp3"; sourceTree = "<group>"; };
 		DD4DC8E917B7091200E96240 /* AccessWay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AccessWay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD4DC8EC17B7091200E96240 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		DD4DC8EE17B7091200E96240 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -75,6 +79,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DD4314B117BF168C00F84FAF /* AVFoundation.framework in Frameworks */,
 				DD4DC93617B862F700E96240 /* AudioToolbox.framework in Frameworks */,
 				DD4DC92717B71C7F00E96240 /* CoreLocation.framework in Frameworks */,
 				DD4DC92217B715F400E96240 /* CoreBluetooth.framework in Frameworks */,
@@ -107,6 +112,7 @@
 		DD4DC8EB17B7091200E96240 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DD4314B017BF168C00F84FAF /* AVFoundation.framework */,
 				DD4DC93517B862F700E96240 /* AudioToolbox.framework */,
 				DD4DC92617B71C7E00E96240 /* CoreLocation.framework */,
 				DD4DC92117B715F400E96240 /* CoreBluetooth.framework */,
@@ -135,6 +141,7 @@
 		DD4DC8F317B7091200E96240 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				DD4314B217BF16EA00F84FAF /* beep-7.mp3 */,
 				DD4DC93217B822FF00E96240 /* accesswayJSON.json */,
 				DD4DC8F417B7091200E96240 /* AccessWay-Info.plist */,
 				DD4DC8F517B7091200E96240 /* InfoPlist.strings */,
@@ -268,6 +275,7 @@
 				DD4DC91217B7091300E96240 /* second.png in Resources */,
 				DD4DC91417B7091300E96240 /* second@2x.png in Resources */,
 				DD4DC93317B822FF00E96240 /* accesswayJSON.json in Resources */,
+				DD4314B317BF16EA00F84FAF /* beep-7.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

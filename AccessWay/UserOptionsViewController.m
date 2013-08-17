@@ -13,6 +13,7 @@
 @end
 
 @implementation UserOptionsViewController
+@synthesize audioPlayerStart;//sythesize all the things for sound
 @synthesize tableView,bleInformationLabel;//synthesize all the things for the UI
 
 
@@ -27,8 +28,6 @@ NSString *theCurrentStation=@"Unknown";
 
 //Objects for storing current location information from the nearest BLE tag
 NSString *theCurrentLocationInformation=@"Unknown";
-
-UIAlertView *actionSheet;
 
 -(id)initWithCoder:(NSCoder *)aDecoder
 {
@@ -60,6 +59,13 @@ UIAlertView *actionSheet;
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     
+    //Initialize the sound
+    NSURL* audioFile2 = [NSURL fileURLWithPath:[[NSBundle mainBundle]
+                                                pathForResource:@"beep-7"
+                                                ofType:@"mp3"]];
+    self.audioPlayerStart = [[AVAudioPlayer alloc] initWithContentsOfURL:audioFile2 error:nil];
+    self.audioPlayerStart.delegate=self;
+    
     //Start scanning for BLE tags
     BLEManager *sharedBLEManager = [BLEManager sharedBLEManager];
     [sharedBLEManager setVoiceCommand:@"LOCATION INFORMATION"];//This uses voice commands similar to previous prototype. Can be replaced later.
@@ -69,12 +75,6 @@ UIAlertView *actionSheet;
                                             selector:@selector(updatedLocationInformationNotification:)
                                                 name:@"LocationInformationNotification"
                                               object:nil];
-    
-    actionSheet = [[UIAlertView alloc] initWithTitle:@"Accessway Beacon Found"
-                                             message:@"What would you like to do?"
-                                            delegate:self
-                                   cancelButtonTitle:@"Ignore"
-                                   otherButtonTitles:@"Tell Me What It Says", nil];
 }
 
 #pragma mark - Table view data source
@@ -209,58 +209,31 @@ UIAlertView *actionSheet;
     NSDictionary *dictionary = [notification userInfo];
     theCurrentLocationInformation = [dictionary valueForKey:@"LocationInformationString"];
     theCurrentStation = [dictionary valueForKey:@"StationNameString"];
-        
-    [actionSheet performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:YES];//Update the UI on the main thread
-}
-
-#pragma mark - UIAlertView Methods
-// A method sent to the delegate after an action sheet is presented to the user.
-/*- (void)didPresentAlertView:(UIAlertView *)actionSheet{
-    //Vibrate the phone
-    AudioServicesPlaySystemSound (kSystemSoundID_Vibrate);
-}*/
-
-// A method sent to the delegate when the user clicks a button on an action sheet.
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
-    //Get the name of the current pressed button
-    NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
-    //Handle action for the case - Tell Me What It Says
-    if  ([buttonTitle isEqualToString:@"Tell Me What It Says"]) {
-        //Show the location information of the nearest BLE
-        self.bleInformationLabel.text=theCurrentLocationInformation;
-        
-        //Enable options in the table
-        //Important - It is important to update the table AFTER the user selects options from the UIAlert. Putting this before the UIAlert shows causes the "[ios sdk UITableTextAccessibilityElement accessibilityContainer]message sent to deallocated instance" error. This is because the tableView reloadData causes cells to deallocate when the UIAlert is being fired
-        //Change the options available to the user (4 and 5) when beacons are found
-        [userOptionsArray replaceObjectAtIndex:2 withObject:@"Directions To A Train"];
-        [userOptionsArray replaceObjectAtIndex:3 withObject:@"Directions To The Exit"];
-        
-        //Reload the table with the new options
-        [self.tableView reloadData];
-        
-        //Enable clicking the of the 3 and 4 cells
-        [[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]]setUserInteractionEnabled:YES];
-        [[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]]setUserInteractionEnabled:YES];
-    }
-    else if ([buttonTitle isEqualToString:@"Ignore"]){
-        //Show minimal information - Station Name
-        self.bleInformationLabel.text=theCurrentStation;
-        
-        //Disable options in the table
-        //Change the options available to the user (4 and 5) when beacons are found
-        [userOptionsArray replaceObjectAtIndex:2 withObject:@"Directions To Train - Disabled"];
-        [userOptionsArray replaceObjectAtIndex:3 withObject:@"Directions To The Exit - Disabled"];
-        
-        //Reload the table with the new options
-        [self.tableView reloadData];
-        
-        //Enable clicking the of the 3 and 4 cells
-        [[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]]setUserInteractionEnabled:NO];
-        [[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]]setUserInteractionEnabled:NO];
-    }
+    
+    [self performSelectorOnMainThread:@selector(updateUI) withObject:nil waitUntilDone:YES];
+    
+    //Change the options available to the user (4 and 5) when beacons are found
+    [userOptionsArray replaceObjectAtIndex:2 withObject:@"Directions To Train"];
+    [userOptionsArray replaceObjectAtIndex:3 withObject:@"Directions To The Exit"];
+    
+    //Reload the table with the new options
+    [self.tableView reloadData];
+    
+    //Enable clicking the of the 3 and 4 cells
+    [[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]]setUserInteractionEnabled:YES];
+    [[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]]setUserInteractionEnabled:YES];
     
     //Send notification to resume scanning
     [[NSNotificationCenter defaultCenter] postNotificationName:@"ResumeScanningNotification" object:nil userInfo:nil];
+}
+
+
+#pragma mark - performSelector methods
+//Method to alert the user and update the information available
+-(void)updateUI{
+    self.bleInformationLabel.text=theCurrentLocationInformation;//Update information
+    [audioPlayerStart play];//Playsound
+    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);//Vibrate device
 }
 
 - (void)didReceiveMemoryWarning

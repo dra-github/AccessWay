@@ -43,6 +43,7 @@ bool hasStationNameChanged = TRUE;
 
 //Objects for getting the device directions
 NSString *deviceDirection;
+NSString *currentDeviceDirection=@"Unknown";
 
 //Things related to the Timer
 NSTimer *appTimer;
@@ -174,7 +175,6 @@ int strongestRSSIAverageValueIndex = -1;
         if (hasStationNameChanged && ![currentStation isEqualToString:@"Unknown"]) {
             NSLog(@"station has changed");
             
-            //[self.accesswayCBManager stopScan];//stop scanning
             [self stopScanForBLETags];//stop scanning
             
             //Get all the (services) UUIDs of all the tags in the current station. Using dispatch_sync because we need to get the UUIDArray before proceeding ahead.
@@ -187,8 +187,6 @@ int strongestRSSIAverageValueIndex = -1;
             NSLog(@"UUIDArray %@",UUIDArray);
             
             [self.accesswayCBManager scanForPeripheralsWithServices:UUIDArray options:@{CBCentralManagerScanOptionAllowDuplicatesKey : @YES }];//scan for tags with services stored in UUIDArray
-            
-            //locationInformationFirstTime=FALSE;
         }
         
         //If the station has not changed, keep searching for the nearest BLE Tag
@@ -202,8 +200,6 @@ int strongestRSSIAverageValueIndex = -1;
                 NSLog(@"adding peripheral");
                 
                 NSMutableArray *tempArray = [[NSMutableArray alloc]initWithCapacity:0];
-                
-                //[tagsAverageRSSIArray addObject:[[NSMutableArray alloc] initWithCapacity:0]];
                 [tagsAverageRSSIArray addObject:tempArray];
             }
             
@@ -217,7 +213,7 @@ int strongestRSSIAverageValueIndex = -1;
                     rssiValueRecordCounter=0;//set rssiValueRecordCounter to 0
                     
                     //Only try to connect if the RSSI is less than -100dB. This is an arbitrary number and we will have to find the correct value to use
-                    if (self.findAverageRSSI>-70){
+                    if (self.findAverageRSSI>-100){
                         NSLog(@"RSSI average %d",self.findAverageRSSI);
                     // Calculate smallest average RSSI value of each tag so that the nearest tag can be determined
                     //int indexOfNearestTag = self.findAverageRSSIandGetNearestTag;
@@ -361,6 +357,11 @@ int strongestRSSIAverageValueIndex = -1;
     NSDictionary *dictionary = [notification userInfo];
     deviceDirection = [dictionary valueForKey:@"HeadingStringValue"];
     
+    //if the direction has changed, then only clear the visitedTagsArray.
+    if (![currentDeviceDirection isEqualToString:deviceDirection]) {
+        [visitedTagsArray removeAllObjects];//clear the visitedTagsArray
+        currentDeviceDirection=deviceDirection;//set the current direction
+    }
 }
 
 #pragma mark - AccesswayJSON Delegate Methods
@@ -436,8 +437,8 @@ int strongestRSSIAverageValueIndex = -1;
     appTimerCount++;
     
     if (appTimerCount==2) {
-        [visitedTagsArray removeAllObjects];//clear the visitedTagsArray
-        appTimerCount=0;
+        //[visitedTagsArray removeAllObjects];//clear the visitedTagsArray
+        appTimerCount=1;
     }
 }
 
