@@ -111,7 +111,8 @@ int strongestRSSIAverageValueIndex = -1;
         self.accesswayCBManager = [[CBCentralManager alloc] initWithDelegate:self queue:backgroundQueueCoreBluetooth];//Set the delegate of CBCentralManager to self. Note the queue is changed to a background thread
         
         //Scan for any peripherals. When a station is found, only those UUIDs of BLEs specific to that station will be scanned for
-        [self.accesswayCBManager scanForPeripheralsWithServices:nil options:@{CBCentralManagerScanOptionAllowDuplicatesKey : @YES }];
+        [self startScanForBLETags];
+        //[self.accesswayCBManager scanForPeripheralsWithServices:nil options:@{CBCentralManagerScanOptionAllowDuplicatesKey : @YES }];
     }
     return self;
 }
@@ -120,6 +121,16 @@ int strongestRSSIAverageValueIndex = -1;
 //Method for setting the voice command
 -(void)setVoiceCommand:(NSString *)_voiceCommand{
     voiceCommand=_voiceCommand;
+}
+
+//Method for starting scan
+-(void)startScanForBLETags{
+    [self.accesswayCBManager scanForPeripheralsWithServices:nil options:@{CBCentralManagerScanOptionAllowDuplicatesKey : @YES }];
+}
+
+//Method for stopping scan
+-(void)stopScanForBLETags{
+    [self.accesswayCBManager stopScan];
 }
 
 #pragma mark - CoreBluetooth Delegate Methods
@@ -163,7 +174,8 @@ int strongestRSSIAverageValueIndex = -1;
         if (hasStationNameChanged && ![currentStation isEqualToString:@"Unknown"]) {
             NSLog(@"station has changed");
             
-            [self.accesswayCBManager stopScan];//stop scanning
+            //[self.accesswayCBManager stopScan];//stop scanning
+            [self stopScanForBLETags];//stop scanning
             
             //Get all the (services) UUIDs of all the tags in the current station. Using dispatch_sync because we need to get the UUIDArray before proceeding ahead.
             dispatch_sync(backgroundQueueJSON, ^{
@@ -212,7 +224,8 @@ int strongestRSSIAverageValueIndex = -1;
                         int indexOfNearestTag = strongestRSSIAverageValueIndex;
                     NSLog(@"nearest tag IS %d",indexOfNearestTag);
                 
-                    [self.accesswayCBManager stopScan];//stop scanning
+                    //[self.accesswayCBManager stopScan];//stop scanning
+                    [self stopScanForBLETags];//stop scanning
                 
                     //Add the discovered tag to the list of visited tags.
                     [visitedTagsArray addObject:[accesswayDiscoveredPeripherals objectAtIndex:indexOfNearestTag]];
@@ -412,7 +425,8 @@ int strongestRSSIAverageValueIndex = -1;
     [accesswayDiscoveredPeripherals removeAllObjects];//remove all discovered peripherals
     [tagsAverageRSSIArray removeAllObjects];//remove all RSSI average values
     
-    [self.accesswayCBManager scanForPeripheralsWithServices:nil options:@{CBCentralManagerScanOptionAllowDuplicatesKey : @YES }];
+    //[self.accesswayCBManager scanForPeripheralsWithServices:nil options:@{CBCentralManagerScanOptionAllowDuplicatesKey : @YES }];
+    [self startScanForBLETags];
 }
 
 #pragma mark - Timer related Methods

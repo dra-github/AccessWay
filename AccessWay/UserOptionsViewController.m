@@ -167,8 +167,8 @@ UIAlertView *actionSheet;
             break;
         
         case 2:
-            //RAJAN'S CODE GOES HERE
             //Directions to train
+            
             break;
             
         case 3:
