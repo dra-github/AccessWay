@@ -25,8 +25,6 @@
 
 // Things for CoreBluetooth.
 @property (nonatomic, strong) CBCentralManager *accesswayCBManager;//CBCentralManager
-@property (nonatomic, strong) CBPeripheral *accesswayCBPeripheral;//CBPeriPheral
-@property (nonatomic, strong) NSMutableData *accesswayCBData;//Array for holding data
 
 // Things and methods for processing CoreBluetooth data.
 -(void)startScanForBLETags;//method to start scanning for BLE Tags

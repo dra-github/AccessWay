@@ -10,8 +10,8 @@
 
 @implementation BLEManager
 
-@synthesize accesswayCBManager,accesswayCBPeripheral,accesswayCBData;//sythesize things for CoreBluetooth
-@synthesize theAccesswayJSONClass;//synthesize things for interacting with AccesswayJSON
+//@synthesize accesswayCBManager;//sythesize things for CoreBluetooth
+//@synthesize theAccesswayJSONClass;//synthesize things for interacting with AccesswayJSON
 
 // Objects to keep track of UUID services
 NSArray *UUIDArray;//array to store CBUUID objects
@@ -33,6 +33,7 @@ NSMutableArray *accesswayDiscoveredPeripherals;
 NSMutableArray *tagsAverageRSSIArray;
 NSMutableArray *RSSIArray;
 NSMutableArray *visitedTagsArray;
+NSMutableArray *serviceUUIDArray;
 
 // Objects used to keep a count of the number of times RSSI value is recorded
 int rssiValueRecordCounter = 0;
@@ -44,9 +45,6 @@ bool hasStationNameChanged = TRUE;
 //Objects for getting the device directions
 NSString *deviceDirection;
 NSString *currentDeviceDirection=@"Unknown";
-
-//Objects for keeping track of the current CBAdvertisementDataLocalNameKey
-NSString *currentCBAdvertisementDataLocalNameKey = @"Unknown";
 
 //Things related to the Timer
 NSTimer *appTimer;
@@ -88,13 +86,14 @@ int strongestRSSIAverageValueIndex = -1;
         tagsAverageRSSIArray = [[NSMutableArray alloc]initWithCapacity:0];
         RSSIArray = [[NSMutableArray alloc]initWithCapacity:0];
         visitedTagsArray = [[NSMutableArray alloc]initWithCapacity:0];
+        serviceUUIDArray = [[NSMutableArray alloc]initWithCapacity:0];
         
         //Initialize all things required for processing JSON
         backgroundQueueJSON = dispatch_queue_create("com.ard.accesswayJSON", NULL);//Create queue for SQLLite
-        theAccesswayJSONClass =[[AccesswayJSON alloc]init];
-        theAccesswayJSONClass.delegate=self;
+        self.theAccesswayJSONClass =[[AccesswayJSON alloc]init];
+        self.theAccesswayJSONClass.delegate=self;
         dispatch_async(backgroundQueueJSON, ^{
-            [theAccesswayJSONClass prepareJSON];
+            [self.theAccesswayJSONClass prepareJSON];
         });
         
         //Start updating device direction
@@ -106,9 +105,9 @@ int strongestRSSIAverageValueIndex = -1;
                                                   object:nil];
         
         //Timer that clears the visited tags per TIME_INTERVAL. This is to avoid detecting the tags just visited continously
-        if(appTimer==nil){
+        /*if(appTimer==nil){
             appTimer = [NSTimer scheduledTimerWithTimeInterval:TIMER_INTERVAL target:self selector:@selector(handleTimerRelatedEvents:) userInfo:nil repeats:YES];
-        }
+        }*/
         
         //Initialize CoreBluetooth capability
         backgroundQueueCoreBluetooth = dispatch_queue_create("com.ard.coreBluetooth", NULL);//Create queue for coreBluetooth
@@ -116,7 +115,6 @@ int strongestRSSIAverageValueIndex = -1;
         
         //Scan for any peripherals. When a station is found, only those UUIDs of BLEs specific to that station will be scanned for
         [self startScanForBLETags];
-        //[self.accesswayCBManager scanForPeripheralsWithServices:nil options:@{CBCentralManagerScanOptionAllowDuplicatesKey : @YES }];
     }
     return self;
 }
@@ -170,7 +168,7 @@ int strongestRSSIAverageValueIndex = -1;
         
         //Get the name of the station to get minimal information to display and to check if there is a change in the station. Do this every 60 seconds
         dispatch_async(backgroundQueueJSON, ^{
-            [theAccesswayJSONClass getStationName:[advertisementData objectForKey:CBAdvertisementDataLocalNameKey]];
+            [self.theAccesswayJSONClass getStationName:[advertisementData objectForKey:CBAdvertisementDataLocalNameKey]];
         });
         
         
@@ -187,14 +185,14 @@ int strongestRSSIAverageValueIndex = -1;
             dispatch_sync(backgroundQueueJSON, ^{
                 NSLog(@"in dispatch");
                 
-                UUIDArray = [theAccesswayJSONClass getUUIDofTagsInStation:[advertisementData objectForKey:CBAdvertisementDataLocalNameKey]];
+                UUIDArray = [self.theAccesswayJSONClass getUUIDofTagsInStation:[advertisementData objectForKey:CBAdvertisementDataLocalNameKey]];
             });
             
             NSLog(@"UUIDArray %@",UUIDArray);
             
+            
             [self startScanForBLETags];
             
-            //[self.accesswayCBManager scanForPeripheralsWithServices:UUIDArray options:@{CBCentralManagerScanOptionAllowDuplicatesKey : @YES }];//scan for tags with services stored in UUIDArray
             
         }
         
@@ -210,11 +208,13 @@ int strongestRSSIAverageValueIndex = -1;
                 
                 NSMutableArray *tempArray = [[NSMutableArray alloc]initWithCapacity:0];
                 [tagsAverageRSSIArray addObject:tempArray];
+                
+                [serviceUUIDArray addObject:[[advertisementData objectForKey:CBAdvertisementDataServiceUUIDsKey] objectAtIndex:0]];//get the first service UUID from the peripheral. 
             }
             
             //If there is atleast 1 tag available and if it is not part of the visitedTagsArray, find the nearest Tag.
             if (tagsAverageRSSIArray.count>0){
-                if (rssiValueRecordCounter<100) {
+                if (rssiValueRecordCounter<50) {
                     rssiValueRecordCounter++;//increment rssiValueRecordCounter
                     [[tagsAverageRSSIArray objectAtIndex:[accesswayDiscoveredPeripherals indexOfObject:peripheral]] addObject:RSSI];//add RSSI value to the array at the index corresponding to the current peripheral
                 }else{
@@ -224,39 +224,18 @@ int strongestRSSIAverageValueIndex = -1;
                     //Only try to connect if the RSSI is less than -100dB. This is an arbitrary number and we will have to find the correct value to use
                     if (self.findAverageRSSI>-100 && ![visitedTagsArray containsObject:[accesswayDiscoveredPeripherals objectAtIndex:strongestRSSIAverageValueIndex]]){
                         
-                        //check if it is in visited array
-                        //yes
-                        //do not connect
-                        //no
-                        //delete existing visited array
-                        //add new peri to visited array
-                        
-                        
-                        
-                        
-                        
-                        // Calculate smallest average RSSI value of each tag so that the nearest tag can be determined
-                        int indexOfNearestTag = strongestRSSIAverageValueIndex;
-                        NSLog(@"nearest tag IS %d",indexOfNearestTag);
+                        //NSLog(@"nearest tag IS %d",indexOfNearestTag);
                         
                         [self stopScanForBLETags];//stop scanning
                         
-                        
-                        
                         [visitedTagsArray removeAllObjects];
-                        [visitedTagsArray addObject:[accesswayDiscoveredPeripherals objectAtIndex:indexOfNearestTag]];//Add the nearest tag to visitedTagsArray
+                        [visitedTagsArray addObject:[accesswayDiscoveredPeripherals objectAtIndex:strongestRSSIAverageValueIndex]];//Add the nearest tag to visitedTagsArray
                         
-                        NSLog(@"Visted array======== %@ count ===== %d",visitedTagsArray,visitedTagsArray.count);
+                        //NSLog(@"Visted array======== %@ count ===== %d",visitedTagsArray,visitedTagsArray.count);
                         
-                        //Connect to the nearest tag and get local information
-                        self.accesswayCBPeripheral=[accesswayDiscoveredPeripherals objectAtIndex:indexOfNearestTag];//assign peripheral to the viewController's peripheral
-                        self.accesswayCBPeripheral.delegate=self;//assign delegate to viewController's peripheral
-                        
-                        [self.accesswayCBManager connectPeripheral:self.accesswayCBPeripheral options:nil];//connect to the peripheral
-                        
-                        
-                        
-                        
+                        dispatch_async(backgroundQueueJSON, ^{
+                            [self.theAccesswayJSONClass getLocationInformationFromTagWithService:[serviceUUIDArray objectAtIndex:strongestRSSIAverageValueIndex] theDeviceDirection:deviceDirection];
+                        });
                         
                     }
                     
@@ -274,52 +253,6 @@ int strongestRSSIAverageValueIndex = -1;
     }
 }
 
-// A delegate method invoked when a connection is successfully created with a peripheral.
-- (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral {
-    NSLog(@"device UUID: %@",peripheral.UUID);
-    
-    //Handling voice command - LOCATION INFORMATION. Checking for any BLE tags and comparing it with the database to find the location information.
-    if([voiceCommand isEqualToString:@"LOCATION INFORMATION"]){
-        // Asks the peripheral to discover the service
-        [self.accesswayCBPeripheral discoverServices:UUIDArray];
-        
-    }
-}
-
-// A delegate method invoked when an existing connection with a peripheral is torn down.
-- (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error{
-    if (error) {
-        NSLog(@"Error disconnecting peripheral: %@", [error localizedDescription]);
-        return;
-    }
-    NSLog(@"Peripheral disconnected");
-}
-
-#pragma mark - CBPeripheral Delegate Methods
-// A delegate method invoked when you discover the included services of a specified service.
-- (void)peripheral:(CBPeripheral *)aPeripheral didDiscoverServices:(NSError *)error {
-    
-    NSLog(@"in diddiscoverservices");
-    
-    if (error) {
-        NSLog(@"Error discovering service: %@", [error localizedDescription]);
-        return;
-    }
-    
-    //Handling voice command - LOCATION INFORMATION. Checking for any BLE tags and comparing it with the database to find the location information.
-    if([voiceCommand isEqualToString:@"LOCATION INFORMATION"]){
-        //Check value of the services with the database to get information about station
-        for (CBService *service in aPeripheral.services) {
-            
-            dispatch_async(backgroundQueueJSON, ^{
-                //NSLog(@"in dispatch");
-                
-                [theAccesswayJSONClass getLocationInformationFromTagWithService:service.UUID theDeviceDirection:deviceDirection];
-            });
-        }
-        [self.accesswayCBManager cancelPeripheralConnection:aPeripheral];//cancel connection
-    }
-}
 
 #pragma mark - Methods for processing CoreBluetooth Data
 /*Function to get the average RSSI value of the discovered tags
@@ -394,14 +327,10 @@ int strongestRSSIAverageValueIndex = -1;
 #pragma mark - Methods for all NSNotifications
 //A method that gets called as soon as the action sheet button is clicked to resume scanning
 - (void)updatedResumeScanningNotification:(NSNotification *)notification{
-    //Scan for any peripherals. When a station is found, only those UUIDs of BLEs specific to that station will be scanned for
-    
-    //hasStationNameChanged=TRUE;
-    //currentStation=@"Unknown";
     
     [accesswayDiscoveredPeripherals removeAllObjects];//remove all discovered peripherals
     [tagsAverageRSSIArray removeAllObjects];//remove all RSSI average values
-    
+    [serviceUUIDArray removeAllObjects];//remove all the service UUID average values
     
     
     [self startScanForBLETags];
@@ -409,8 +338,8 @@ int strongestRSSIAverageValueIndex = -1;
 
 #pragma mark - Timer related Methods
 //Timer selector method that handles different conditions and logic
--(void)handleTimerRelatedEvents:(NSTimer *)timer{
+/*-(void)handleTimerRelatedEvents:(NSTimer *)timer{
     
-}
+}*/
 
 @end
