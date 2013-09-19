@@ -154,30 +154,6 @@ NSString *currentStation = @"Unknown";
     [self.delegate didFindLocationInformation:self theLocationInformation:locationInformation theStationName:currentStation theTagID:selectedTagID];
 }
 
-/*Function to get location information based on tag service and current direction
- PARAMETERS:CBUUID serviceUUID: service UUID of the connected tag, NSString deviceDirection: the current device direction
- RETURNS:NONE
- */
-/*- (void)getLocationInformationFromTagWithService:(CBUUID *)serviceUUID theDeviceDirection:(NSString *)deviceDirection{
-    NSLog(@"in getlocationinfo");
-    NSString *locationInformation = @"unknown";
-    
-    NSArray *tagsInStationArray=[currentStationDictionary objectForKey:@"tagsAvailable"];
-    
-    //Search for relevant information
-    for (int i=0; i<tagsInStationArray.count; i++) {
-        NSString *tagID = [[tagsInStationArray objectAtIndex:i] objectForKey:@"tagID"];
-        //find match for serviceUUID
-        if ([serviceUUID isEqual:[CBUUID UUIDWithString:tagID]]) {
-            NSLog(@"tagID is %@",[[tagsInStationArray objectAtIndex:i] objectForKey:@"tagID"]);
-            
-            locationInformation = [[[[tagsInStationArray objectAtIndex:i]objectForKey:@"information"] objectAtIndex:0] objectForKey:deviceDirection];
-            NSLog(@"loca info %@",locationInformation);
-        }
-    }
-    
-    [self.delegate didFindLocationInformation:self theLocationInformation:locationInformation];
-}*/
 
 /*Function to get complete route information based on nearest tag and end destination
  PARAMETERS:CBUUID serviceUUID: service UUID of the connected tag

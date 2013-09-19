@@ -32,8 +32,8 @@ NSMutableArray *accesswayDiscoveredPeripherals;
 // Objects for processing CoreBluetooth data
 NSMutableArray *tagsAverageRSSIArray;
 NSMutableArray *RSSIArray;
-NSMutableArray *visitedTagsArray;
 NSMutableArray *serviceUUIDArray;
+CBPeripheral *visitedTag;
 
 // Objects used to keep a count of the number of times RSSI value is recorded
 int rssiValueRecordCounter = 0;
@@ -48,13 +48,13 @@ NSString *currentDeviceDirection=@"Unknown";
 
 //Things related to the Timer
 NSTimer *appTimer;
-int appTimerCount=1;
+int appTimerCount=0;
 
 //Objects for the rssiAverageValue
 int strongestRSSIAverageValueIndex = -1;
 
 // Defining constants
-#define TIMER_INTERVAL 30.0 //timer interval
+#define TIMER_INTERVAL 10.0 //timer interval
 
 #pragma mark Singleton Methods
 
@@ -85,7 +85,6 @@ int strongestRSSIAverageValueIndex = -1;
         //Initalize objects used to process CoreBluetooth data.
         tagsAverageRSSIArray = [[NSMutableArray alloc]initWithCapacity:0];
         RSSIArray = [[NSMutableArray alloc]initWithCapacity:0];
-        visitedTagsArray = [[NSMutableArray alloc]initWithCapacity:0];
         serviceUUIDArray = [[NSMutableArray alloc]initWithCapacity:0];
         
         //Initialize all things required for processing JSON
@@ -106,8 +105,8 @@ int strongestRSSIAverageValueIndex = -1;
         
         //Timer that clears the visited tags per TIME_INTERVAL. This is to avoid detecting the tags just visited continously
         /*if(appTimer==nil){
-            appTimer = [NSTimer scheduledTimerWithTimeInterval:TIMER_INTERVAL target:self selector:@selector(handleTimerRelatedEvents:) userInfo:nil repeats:YES];
-        }*/
+         appTimer = [NSTimer scheduledTimerWithTimeInterval:TIMER_INTERVAL target:self selector:@selector(handleTimerRelatedEvents:) userInfo:nil repeats:YES];
+         }*/
         
         //Initialize CoreBluetooth capability
         backgroundQueueCoreBluetooth = dispatch_queue_create("com.ard.coreBluetooth", NULL);//Create queue for coreBluetooth
@@ -167,9 +166,12 @@ int strongestRSSIAverageValueIndex = -1;
     if([voiceCommand isEqualToString:@"LOCATION INFORMATION"]){
         
         //Get the name of the station to get minimal information to display and to check if there is a change in the station. Do this every 60 seconds
+        
         dispatch_async(backgroundQueueJSON, ^{
             [self.theAccesswayJSONClass getStationName:[advertisementData objectForKey:CBAdvertisementDataLocalNameKey]];
         });
+        
+        
         
         
         
@@ -209,31 +211,31 @@ int strongestRSSIAverageValueIndex = -1;
                 NSMutableArray *tempArray = [[NSMutableArray alloc]initWithCapacity:0];
                 [tagsAverageRSSIArray addObject:tempArray];
                 
-                [serviceUUIDArray addObject:[[advertisementData objectForKey:CBAdvertisementDataServiceUUIDsKey] objectAtIndex:0]];//get the first service UUID from the peripheral. 
+                [serviceUUIDArray addObject:[[advertisementData objectForKey:CBAdvertisementDataServiceUUIDsKey] objectAtIndex:0]];//get the first service UUID from the peripheral.
             }
             
             //If there is atleast 1 tag available and if it is not part of the visitedTagsArray, find the nearest Tag.
             if (tagsAverageRSSIArray.count>0){
-                if (rssiValueRecordCounter<50) {
+                
+                if (rssiValueRecordCounter<5) {
                     rssiValueRecordCounter++;//increment rssiValueRecordCounter
                     [[tagsAverageRSSIArray objectAtIndex:[accesswayDiscoveredPeripherals indexOfObject:peripheral]] addObject:RSSI];//add RSSI value to the array at the index corresponding to the current peripheral
                 }else{
                     
                     rssiValueRecordCounter=0;//set rssiValueRecordCounter to 0
-                    
+
                     //Only try to connect if the RSSI is less than -100dB. This is an arbitrary number and we will have to find the correct value to use
-                    if (self.findAverageRSSI>-100 && ![visitedTagsArray containsObject:[accesswayDiscoveredPeripherals objectAtIndex:strongestRSSIAverageValueIndex]]){
-                        
+                    if (self.findAverageRSSI>-300 && ![visitedTag isEqual:[accesswayDiscoveredPeripherals objectAtIndex:strongestRSSIAverageValueIndex]]){
                         //NSLog(@"nearest tag IS %d",indexOfNearestTag);
                         
                         [self stopScanForBLETags];//stop scanning
                         
-                        [visitedTagsArray removeAllObjects];
-                        [visitedTagsArray addObject:[accesswayDiscoveredPeripherals objectAtIndex:strongestRSSIAverageValueIndex]];//Add the nearest tag to visitedTagsArray
+                        visitedTag=[accesswayDiscoveredPeripherals objectAtIndex:strongestRSSIAverageValueIndex];
                         
                         //NSLog(@"Visted array======== %@ count ===== %d",visitedTagsArray,visitedTagsArray.count);
                         
                         dispatch_async(backgroundQueueJSON, ^{
+                            NSLog(@"device direction %@",deviceDirection);
                             [self.theAccesswayJSONClass getLocationInformationFromTagWithService:[serviceUUIDArray objectAtIndex:strongestRSSIAverageValueIndex] theDeviceDirection:deviceDirection];
                         });
                         
@@ -278,6 +280,7 @@ int strongestRSSIAverageValueIndex = -1;
         NSLog(@"tempavgno %d index %d",(tempAverageNumber/(int)[[tagsAverageRSSIArray objectAtIndex:i] count]),i);
     }
     
+    NSLog(@"visited tag %@",visitedTag);
     return smallestRSSIAverageValue;
 }
 
@@ -285,7 +288,7 @@ int strongestRSSIAverageValueIndex = -1;
 //A method that gets the current direction of the device when the heading changes are detected in CoreLocationManager
 - (void)updatedHeadingNotification:(NSNotification *)notification //use notification method and logic
 {
-    NSLog(@"in updatedHeadingNotification");
+    //NSLog(@"in updatedHeadingNotification");
     NSDictionary *dictionary = [notification userInfo];
     deviceDirection = [dictionary valueForKey:@"HeadingStringValue"];
     
@@ -299,7 +302,7 @@ int strongestRSSIAverageValueIndex = -1;
         currentStation=stationName;
         hasStationNameChanged=TRUE;
         
-        [visitedTagsArray removeAllObjects];
+        visitedTag=nil;
         [accesswayDiscoveredPeripherals removeAllObjects];//remove all discovered peripherals
         [tagsAverageRSSIArray removeAllObjects];//remove all RSSI average values
     }
@@ -332,14 +335,23 @@ int strongestRSSIAverageValueIndex = -1;
     [tagsAverageRSSIArray removeAllObjects];//remove all RSSI average values
     [serviceUUIDArray removeAllObjects];//remove all the service UUID average values
     
-    
     [self startScanForBLETags];
 }
 
 #pragma mark - Timer related Methods
 //Timer selector method that handles different conditions and logic
-/*-(void)handleTimerRelatedEvents:(NSTimer *)timer{
+-(void)handleTimerRelatedEvents:(NSTimer *)timer{
+    switch (appTimerCount) {
+        case 0:
+            break;
+            
+        case 1:
+            break;
+            
+        default:
+            break;
+    }
     
-}*/
+}
 
 @end
